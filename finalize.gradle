@@ -1,0 +1,34 @@
+plugins {
+    id 'org.asciidoctor.jvm.gems' version '3.3.0'
+    id 'org.asciidoctor.jvm.convert' version '3.3.0'
+    }
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    ruby {
+        gems()
+        }
+    }
+
+asciidoctor {
+    baseDirFollowsSourceDir()
+    sourceDir = file("$rootProject.buildDir")
+    sources {
+        include '00-user-guide.adoc'
+        }
+    attributes 'icons': 'font',
+            'setanchors': '',
+            'rootDir': file(rootDir),
+            'docinfo': 'shared'
+    }
+
+task finalize(dependsOn: ['asciidoctor']) {
+    doLast{
+        copy {
+            from asciidoctor.getOutputs()
+            into "$rootDir"
+            }
+        }
+    }
