@@ -1,34 +1,32 @@
 plugins {
     id 'java'
-    id "com.bmuschko.docker-java-application" version "9.1.0"
-    id "com.bmuschko.docker-remote-api" version "9.1.0"
+    id 'application'
+    id 'java-gradle-plugin'
+    id 'com.bmuschko.docker-java-application' version '9.1.0'
+    id 'com.bmuschko.docker-remote-api' version '9.1.0'
     }
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
     }
 
 dependencies {
     implementation group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '6.7.0'
     implementation group: 'com.bmuschko', name: 'asciidoctorj-tabbed-code-extension', version: '0.3'
+    implementation(buildsrclibs.asciidoctor.jvm.plugin)
+    runtimeOnly(buildsrclibs.asciidoctorj.tabbed.code.extension)
     }
 
 docker {
     javaApplication {
-        baseImage = 'dockerfile/java:openjdk-7-jre'
-        maintainer = 'Benjamin Muschko "benjamin.muschko@gmail.com"'
+        baseImage = 'openjdk:11.0.15-jre-slim'
+        maintainer = 'Michael Redlich "mike@redlich.net"'
         ports = [9090, 5701]
         images = ['jettyapp:1.115', 'jettyapp:latest']
         jvmArgs = ['-Xms256m', '-Xmx2048m']
+        mainClassName = 'org.gradle.MainApp'
         }
-    }
-
-dockerBuildImage {
-
-    }
-
-dockerPushImage {
-
     }
 
 dockerCreateDockerfile {
@@ -37,3 +35,19 @@ dockerCreateDockerfile {
     }
 
 dockerCreateDockerfile.instructionsFromTemplate file('Dockerfile.tmpl')
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+task buildMyDockerImage(type: DockerBuildImage) {
+    inputDir = file('build/docker')
+    images.add('test/myapp:latest')
+    }
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+application {
+    mainClass.set('org.gradle.MainApp')
+    }

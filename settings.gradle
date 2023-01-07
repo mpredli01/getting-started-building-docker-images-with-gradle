@@ -1,1 +1,9 @@
 rootProject.name = 'getting-started-building-docker-images-with-gradle'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("buildsrclibs") {
+            from(files("./gradle/buildsrc.libs.versions.toml"))
+            }
+        }
+    }

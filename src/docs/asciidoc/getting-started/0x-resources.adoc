@@ -1,3 +1,7 @@
 == Resources
 
-* Gradle Docker Plugin https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/index.html[JavaDocs]
+* JavaDocs: https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/index.html[Gradle Docker Plugin]
+* User Guide: https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/[Gradle Docker Plugin User Guide and Examples]
+* https://plugins.gradle.org/[Gradle Plugin Portal]
+* Documentation: https://docs.gradle.org/current/userguide/plugins.html[Using Gradle Plugins]
+

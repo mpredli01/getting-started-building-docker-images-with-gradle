@@ -25,3 +25,4 @@ You can learn more from https://bmuschko.github.io/gradle-docker-plugin/current/
 
 include::01-getting-started.adoc[]
 include::02-plugins.adoc[]
+include::0x-resources.adoc[]

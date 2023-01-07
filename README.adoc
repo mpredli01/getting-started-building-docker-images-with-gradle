@@ -1,9 +1,13 @@
 = Getting Started Building Docker Images with Gradle
 
-This repository provides the ```Getting Started Building Docker Images with Gradle``` Gradle guide along with the source code to build a simple Docker images using the with Gradle
+This repository provides the Gradle Guide, ```Getting Started Building Docker Images with Gradle```, along with the source code to build a simple Docker images using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin].
 
-== Documentation
+== Clone this Repository
 
-== Building from Source
+On your local machine execute:
 
-`gradle build`
+`git clone https://github.com/mpredli01/getting-started-building-docker-images-with-gradle.git`
+
+== Build and Execute the Application
+
+Follow the Gradle Guide included in this repository.
