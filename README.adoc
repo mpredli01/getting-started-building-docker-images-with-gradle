@@ -8,7 +8,7 @@ To build and execute the application, simply clone this repository to your local
 
 `git clone https://github.com/mpredli01/getting-started-building-docker-images-with-gradle.git`
 
-Then, follow the Gradle Guide included in this repository that may be found https://github.com/mpredli01/getting-started-building-docker-images-with-gradle/blob/master/src/docs/asciidoc/guide/guide.html[here].
+Then, follow the Gradle Guide included in this repository that may be found https://htmlpreview.github.io/?https://github.com/mpredli01/getting-started-building-docker-images-with-gradle/blob/master/src/docs/asciidoc/guide/guide.html[here].
 
 == Want to Contribute?
 
