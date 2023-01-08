@@ -5,3 +5,4 @@
 * https://plugins.gradle.org/[Gradle Plugin Portal]
 * Documentation: https://docs.gradle.org/current/userguide/plugins.html[Using Gradle Plugins]
 
+include::summary.adoc[]

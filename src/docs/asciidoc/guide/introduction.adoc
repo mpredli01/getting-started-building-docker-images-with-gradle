@@ -1,14 +1,12 @@
-= Getting Started Building Docker Images with Gradle
-
 == Introduction
 
 This tutorial is ...
 
-== What You'll Build
+=== What You'll Build
 
 In this tutorial, You will learn how to build a simple Docker image using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin].
 
-== What You'll Need
+=== What You'll Need
 
 * A text editor or IDE such as https://www.jetbrains.com/idea/download/[IntelliJ IDEA]
 * A Java Development Kit (JDK), version 11+
@@ -19,10 +17,8 @@ In this tutorial, You will learn how to build a simple Docker image using the ht
 [IMPORTANT]
 This plugin requires Gradle >= 7.4.0.
 
-== User Guild and Examples
+=== User Guide and Examples
 
 You can learn more from https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/[Gradle Docker Plugin User Guide and Examples] documentation.
 
-include::01-getting-started.adoc[]
-include::02-plugins.adoc[]
-include::0x-resources.adoc[]
+include::getting-started.adoc[]

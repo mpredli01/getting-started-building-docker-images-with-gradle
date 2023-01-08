@@ -31,31 +31,11 @@ dependencies {
     runtimeOnly(buildsrclibs.asciidoctorj.tabbed.code.extension)
     }
 
-/*
-docker {
-    javaApplication {
-        baseImage = 'openjdk:11.0.15-jre-slim'
-        maintainer = 'Michael Redlich "mike@redlich.net"'
-        ports = [9090, 5701]
-        images = ['jettyapp:1.115', 'jettyapp:latest']
-        jvmArgs = ['-Xms256m', '-Xmx2048m']
-        mainClassName = 'org.gradle.MainApp'
-        }
-    }
-
-dockerCreateDockerfile {
-    instruction 'RUN ls -la'
-    environmentVariable 'JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap'
-    }
-
-dockerCreateDockerfile.instructionsFromTemplate file('Dockerfile.tmpl')
- */
-
 task createMyAppDockerfile(type: Dockerfile) {
     instruction('FROM openjdk:11.0.15-jre-slim')
     instruction('LABEL maintainer=\"Michael Redlich\"')
-    instruction('WORKDIR /app')
-    instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/muDockerApp/classes:/app/libs/*", "org.gradle.MainApp"]')
+    instruction('WORKDIR /app2')
+    instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]')
     instruction('EXPOSE 9090 5701')
     instruction('RUN ls -la')
     environmentVariable('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
@@ -65,7 +45,7 @@ task createMyAppDockerfile(type: Dockerfile) {
 task buildMyAppImage(type: DockerBuildImage) {
     dependsOn(createMyAppDockerfile)
     inputDir.set(file('build/docker'))
-    images.add('test/app:latest')
+    images.add('test/app2:latest')
     }
 
 task createMyAppContainer(type: DockerCreateContainer) {
