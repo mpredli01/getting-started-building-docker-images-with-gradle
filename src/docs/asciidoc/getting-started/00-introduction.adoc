@@ -6,12 +6,12 @@ This tutorial is ...
 
 == What You'll Build
 
-In this tutorial, Yyu will learn how to build a simple Docker image using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin].
+In this tutorial, You will learn how to build a simple Docker image using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin].
 
 == What You'll Need
 
 * A text editor or IDE such as https://www.jetbrains.com/idea/download/[IntelliJ IDEA]
-* A Java Development Kit (JDK), version 11 or higher such as Eclipse Adoptium
+* A Java Development Kit (JDK), version 11+
 * The latest version of https://www.docker.com/[Docker]
 * The latest https://gradle.org/install/[Gradle] distribution
 * The https://github.com/docker-java/docker-java[Docker Java] library

@@ -24,3 +24,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+out.txt

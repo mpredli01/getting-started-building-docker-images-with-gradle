@@ -1,3 +1,11 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerListImages
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.DockerInfo
+import com.bmuschko.gradle.docker.tasks.DockerVersion
+import com.bmuschko.gradle.docker.tasks.DockerOperation
+
 plugins {
     id 'java'
     id 'application'
@@ -36,11 +44,32 @@ dockerCreateDockerfile {
 
 dockerCreateDockerfile.instructionsFromTemplate file('Dockerfile.tmpl')
 
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-
-task buildMyDockerImage(type: DockerBuildImage) {
-    inputDir = file('build/docker')
+task buildMyAppImage(type: DockerBuildImage) {
+    dependsOn(dockerCreateDockerfile)
+    inputDir.set(file('build/docker'))
     images.add('test/myapp:latest')
+    }
+
+task createMyAppContainer(type: DockerCreateContainer) {
+    dependsOn(buildMyAppImage)
+    targetImageId(buildMyAppImage.getImageId())
+    }
+
+task startMyAppContainer(type: DockerStartContainer) {
+    dependsOn(createMyAppContainer)
+    targetContainerId(createMyAppContainer.getContainerId())
+    }
+
+task getMyDockerInfo(type: DockerInfo) {
+    }
+
+task getMyDockerVersion(type: DockerVersion) {
+    }
+
+task getMyDockerOperation(type: DockerOperation) {
+    }
+
+task getMyDockerImageList(type: DockerListImages) {
     }
 
 apply plugin: 'java'

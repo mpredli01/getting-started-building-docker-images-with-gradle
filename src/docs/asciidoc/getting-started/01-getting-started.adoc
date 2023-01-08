@@ -1,1 +1,19 @@
 == Getting Started
+
+You will be using the https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#java-application-plugin[Java Application Plugin] for this example application.
+
+=== Define Appropriate Plugins for the Application
+
+Let's incrementally build our `build.gradle` file by adding the `plugins`:
+
+`plugins {
+    id 'java'
+    id 'application'
+    id 'java-gradle-plugin'
+    id 'com.bmuschko.docker-java-application' version '9.1.0'
+    id 'com.bmuschko.docker-remote-api' version '9.1.0'
+}`
+
+=== Java Application Plugin Classes
+
+The Java classes are instantiated in the `build.gradle` file, in other words, you won't be using the `new` keyword. Instead,
