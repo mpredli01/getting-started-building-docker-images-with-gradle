@@ -1,0 +1,103 @@
+== Tasks
+
+A Gradle Task represents a single atomic piece of work for a Gradle build, such as compiling classes or generating JavaDocs. Tasks are comprised by series of actions as defined by implementations of the https://docs.gradle.org/7.6/javadoc/org/gradle/api/Action.html[`Action`] interface. Tasks are allowed to depend on other tasks.
+
+You can create your own custom tasks by extending the https://docs.gradle.org/7.6/javadoc/org/gradle/api/DefaultTask.html[`DefaultTask`] class which implements the https://docs.gradle.org/7.6/javadoc/org/gradle/api/Task.html[`Task`] interface.
+
+In the Getting Started section, you imported all the required classes for this example application
+
+[IMPORTANT]
+Directly instantiating these classes is *not* supported. You can only instatiate them in the Gradle API or DSL, such as the `build.gradle` file.
+
+=== Defined Tasks
+
+These are the defined task names for the example application:
+
+* `createMyAppDockerfile` generates a working `Dockerfile` file based on the template, `Dockefile.tmpl`.
+* `buildMyAppImage` builds the Docker image from the generated `Dockerfile`.
+** depends on `createMyAppDockerfile`
+* `createMyAppContainer` creates the Docker container.
+** depends on `buildMyAppImage`
+* `startMyAppContainer` starts the Docker container.
+** depends on `createMyAppContainer`
+* `stopMyAppContainer`
+* `executeMyAppContainer`
+* `getMyDockerInfo`
+* `getMyDockerVersion`
+* `getMyDockerImageList`
+* `getMyDockerOperation`
+
+You can individually add all of these to your `build.gradle` file. We will discuss each of these and their corresponding classes.
+
+[source, gradle]
+----
+task createMyAppDockerfile(type: Dockerfile) {
+instruction('FROM openjdk:11.0.15-jre-slim')
+instruction('LABEL maintainer=\"Michael Redlich\"')
+instruction('WORKDIR /app2')
+instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]')
+instruction('EXPOSE 9090 5701')
+instruction('RUN ls -la')
+environmentVariable('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
+instructionsFromTemplate(file('Dockerfile.tmpl'))
+}
+----
+
+[source, gradle]
+----
+task buildMyAppImage(type: DockerBuildImage) {
+    dependsOn(createMyAppDockerfile)
+    inputDir.set(file('build/docker'))
+    images.add('test/app2:latest')
+    }
+----
+
+[source, gradle]
+----
+task createMyAppContainer(type: DockerCreateContainer) {
+    dependsOn(buildMyAppImage)
+    targetImageId(buildMyAppImage.getImageId())
+    }
+----
+
+[source, gradle]
+----
+task startMyAppContainer(type: DockerStartContainer) {
+    dependsOn(createMyAppContainer)
+    targetContainerId(createMyAppContainer.getContainerId())
+    }
+----
+
+[source, gradle]
+----
+task stopMyAppContainer(type: DockerStopContainer) {
+    targetContainerId(createMyAppContainer.getContainerId())
+    }
+----
+
+[source, gradle]
+----
+task executeMyAppContainer(type: DockerExecContainer) {
+    targetContainerId(createMyAppContainer.getContainerId())
+    }
+----
+
+[source, gradle]
+----
+task getMyDockerInfo(type: DockerInfo) {
+    }
+----
+
+[source, gradle]
+----
+task getMyDockerVersion(type: DockerVersion) {
+    }
+----
+
+[source, gradle]
+----
+task getMyDockerImageList(type: DockerListImages) {
+    }
+----
+
+include::build-and-execute.adoc[]

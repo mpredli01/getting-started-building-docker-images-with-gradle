@@ -1,0 +1,115 @@
+== Build and Execute the Application
+
+`gradle clean startMyAppContainer`
+
+`gradle getMyDockerImageList`
+
+[source, gradle]
+----
+Repository Tags : test/app2:latest
+Image ID        : sha256:c2f34a8c1df67b413537f9d706c85724bec78cfcaa85374194b10fda76e2fbae
+Created         : Sun Jan 08 10:41:03 EST 2023
+Virtual Size    : 227459049
+-----------------------------------------------
+Repository Tags : test/app:latest
+Image ID        : sha256:13e86aa2705c759b869ecc3c4de2e3d3a0c44cd13e7d1fa573693e34ebcbefdf
+Created         : Sun Jan 08 09:25:07 EST 2023
+Virtual Size    : 227459049
+-----------------------------------------------
+Repository Tags : test/myapp:latest
+Image ID        : sha256:ec013200a08d606abdf922e4941d5d557ed7a1718ad0a7f83a32e236503a70f4
+Created         : Sat Jan 07 20:14:53 EST 2023
+Virtual Size    : 425724205
+-----------------------------------------------
+Repository Tags : <none>:<none>
+Image ID        : sha256:09d2222453762f0a87efa26797baea7c56a8348f94b1edbbc143f9422cb60332
+Created         : Sat Jan 07 19:58:54 EST 2023
+Virtual Size    : 425723773
+-----------------------------------------------
+Repository Tags : <none>:<none>
+Image ID        : sha256:e8f5b45dedfec84302653b3611bedeea9230491a2db6d744f30a172e0659840a
+Created         : Sat Jan 07 19:33:26 EST 2023
+Virtual Size    : 425724364
+-----------------------------------------------
+Repository Tags : <none>:<none>
+Image ID        : sha256:dbe8b9fef243ca4d0e183e7d448db8da8a6cf4333eee825ba86fd47952bb868c
+Created         : Sat Jan 07 18:06:40 EST 2023
+Virtual Size    : 425724227
+-----------------------------------------------
+Repository Tags : <none>:<none>
+Image ID        : sha256:db65df43475cccec9ee5a99fe073bb8b875f660c3a4c493709e39a11e392b4b9
+Created         : Sat Jan 07 16:39:25 EST 2023
+Virtual Size    : 425724542
+-----------------------------------------------
+Repository Tags : mongo:latest
+Image ID        : sha256:0850fead9327a6d88722c27116309022d78e9daf526b407a88de09762c32e620
+Created         : Thu Dec 08 21:37:35 EST 2022
+Virtual Size    : 699901543
+-----------------------------------------------
+Repository Tags : cassandra:latest
+Image ID        : sha256:5b647422e184fb0fd8f6d5513541e85c06876bdaa68decc026abcb65c3fe4ec5
+Created         : Fri Nov 04 19:47:02 EDT 2022
+Virtual Size    : 353334938
+-----------------------------------------------
+Repository Tags : arangodb/arangodb:latest
+Image ID        : sha256:d81cf81aaa4b1b637874eab9b877e34dcdee97a00800aaece837fd3d32f7eb56
+Created         : Thu Sep 29 10:22:06 EDT 2022
+Virtual Size    : 439791606
+-----------------------------------------------
+Repository Tags : jakartaee-cafe:v1
+Image ID        : sha256:f03eac10057c875306561572ce9ce338aa14f4d73917689ec911e891d0a9ce4d
+Created         : Tue Sep 13 13:38:25 EDT 2022
+Virtual Size    : 484008628
+-----------------------------------------------
+Repository Tags : <none>:<none>
+Image ID        : sha256:d85c8d0913597830145d526733fc64543dab9606001a1ba7dea7332cb3168e1c
+Created         : Tue Sep 06 07:40:14 EDT 2022
+Virtual Size    : 484008672
+-----------------------------------------------
+Repository Tags : <none>:<none>
+Image ID        : sha256:6bbbc6493fbcfc579c5ceba1b6cb59383ef1e9830ab0e244b5bb5ce4d30f5d54
+Created         : Mon Sep 05 12:14:07 EDT 2022
+Virtual Size    : 484008672
+-----------------------------------------------
+Repository Tags : testcontainers/ryuk:0.3.4
+Image ID        : sha256:7ac27de2f0c441174e7e12a105f876493b902ffd7bbb2a3646aa929c08cc3806
+Created         : Thu Jul 28 10:06:18 EDT 2022
+Virtual Size    : 11975796
+-----------------------------------------------
+Repository Tags : openjdk:11.0.15-jre-slim
+Image ID        : sha256:699c24828c341c27d15a4f62b5c8fa3c5c986bf52fa76228906c50634f430311
+Created         : Mon Jul 11 22:00:45 EDT 2022
+Virtual Size    : 227459049
+-----------------------------------------------
+Repository Tags : quay.io/strimzi-test-container/test-container:0.102.0-kafka-3.1.0
+Image ID        : sha256:475805acc0817503ece6b995faf40239935408a4b0e7ad87e10cebf5ffa5d0bc
+Created         : Tue Jun 28 04:03:11 EDT 2022
+Virtual Size    : 484031489
+-----------------------------------------------
+Repository Tags : ghcr.io/shopify/toxiproxy:2.4.0
+Image ID        : sha256:d3349b5be4c9034ef91cf2944a85dfc1f6ac1d0fd83fd19691b4864536f66925
+Created         : Mon Mar 07 11:22:49 EST 2022
+Virtual Size    : 17096704
+-----------------------------------------------
+Repository Tags : testcontainers/ryuk:0.3.3
+Image ID        : sha256:64f4b02dc9864d9621d248e55835408a03b3cd8239b790e610c71c29ea45a3b9
+Created         : Thu Oct 14 04:34:37 EDT 2021
+Virtual Size    : 11982543
+-----------------------------------------------
+Repository Tags : docker101tutorial:latest, mpredli01/docker101tutorial:latest
+Image ID        : sha256:89c1ee81cd04217a7e39da679a8921714788c42ffa7f52e2ffabb78a2e4239db
+Created         : Mon Jan 25 04:07:32 EST 2021
+Virtual Size    : 27691421
+-----------------------------------------------
+Repository Tags : alpine/git:latest
+Image ID        : sha256:04dbb58d2cea66b732a6e96888a29909df1afd6a58b31eb327ade7d54e8fbd64
+Created         : Wed Jan 20 00:05:44 EST 2021
+Virtual Size    : 25078792
+-----------------------------------------------
+Repository Tags : gcr.io/k8s-minikube/kicbase:v0.0.10
+Image ID        : sha256:e6bc41c39dc48b2b472936db36aedb28527ce0f675ed1bc20d029125c9ccf578
+Created         : Mon Apr 27 13:43:12 EDT 2020
+Virtual Size    : 973506865
+-----------------------------------------------
+----
+include::plugins.adoc[]

@@ -1,23 +1,24 @@
 = Getting Started Building Docker Images with Gradle
 
-This repository provides an example application to create, build and start a simple Docker image using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin]. It complements the Gradle Guide, `Getting Started Building Docker Images with Gradle`.
+This repository provides an example application to create a simple Docker image using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin]. It complements the Gradle Guide, `Getting Started Building Docker Images with Gradle`.
 
-== Build and Execute the Application
+== Clone the Repository
 
 To build and execute the application, simply clone this repository to your local machine using the following `git` command:
 
 `git clone https://github.com/mpredli01/getting-started-building-docker-images-with-gradle.git`
 
-Then, follow the Gradle Guide included in this repository that may be found https://htmlpreview.github.io/?https://github.com/mpredli01/getting-started-building-docker-images-with-gradle/blob/master/src/docs/asciidoc/guide/guide.html[here].
+Then, follow the steps outlined in this https://htmlpreview.github.io/?https://github.com/mpredli01/getting-started-building-docker-images-with-gradle/blob/master/src/docs/asciidoc/guide/guide.html[Gradle Guide].
 
 == Want to Contribute?
 
-Are you interested in contributing to this project?  If so, that would be awesome! Just follow these step-by-step instructions:
+Are you interested in contributing to this project?  If so, awesome! Just follow these step-by-step instructions:
 
-=== Fork This Repository
+=== Fork the Repository
 
-* From your own GitHub account, visit this repository.
-* Click the fork button.
+* Login to your personal GitHub account
+* Visit this repository
+* Click the fork button located in the upper right corner
 
 === Clone Your Copy of the Repository
 * Clone your copy of the repository to your local machine
