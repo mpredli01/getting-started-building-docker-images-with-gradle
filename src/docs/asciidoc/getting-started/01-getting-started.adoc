@@ -17,3 +17,48 @@ Let's incrementally build our `build.gradle` file by adding the `plugins`:
 === Java Application Plugin Classes
 
 The Java classes are instantiated in the `build.gradle` file, in other words, you won't be using the `new` keyword. Instead,
+
+The `Docker.tmpl` file is a template that is used for the plugin to create the official `Dockerfile` in the `build` directory upon success of the build.
+
+`# template for generated Dockerfile'
+
+`gradle clean startMyAppContainer --warning-mode all`
+
+The `--warning-mode` flag is used for listing deprecated Gradle features that may be incompatible with Gradle 8.0 scheduled for release on { date }.
+
+The generated `Dockerfile` may be found in the `/build/docker` directory.  It contains:
+
+`FROM openjdk:11.0.15-jre-slim
+LABEL maintainer="Michael Redlich \"mike@redlich.net\""
+WORKDIR /app
+COPY libs libs/
+COPY classes classes/
+ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/app/classes:/app/libs/*", "org.gradle.MainApp"]
+EXPOSE 9090 5701
+RUN ls -la
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+# template for generated Dockerfile'
+
+=== Defined Tasks
+
+These are the defined tasks for building and working with your Docker image.
+
+==== Starting a Docker Image
+* `createMyAppDockerfile` generates a working `Dockerfile` file based on the template, `Dockefile.tmpl`.
+* `buildMyAppImage` builds the Docker image from the generated `Dockerfile`.
+** depends on `createMyAppDockerfile`
+* `createMyAppContainer` creates the Docker container.
+** depends on `buildMyAppImage`
+* `startMyAppContainer` starts the Docker container.
+** depends on `createMyAppContainer`
+
+`gradle clean startMyAppContainer`
+
+==== Docker Utilities
+
+* `stopMyAppContainer`
+* `executeMyAppContainer`
+* `getMyDockerInfo`
+* `getMyDockerVersion`
+* `getMyDockerImageList`
+* `getMyDockerOperation`

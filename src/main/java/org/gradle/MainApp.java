@@ -10,11 +10,5 @@ public class MainApp {
         System.out.println("*----------------------------------------------------*");
 
         DockerJavaApplicationPlugin dockerJavaApplicationPlugin = new DockerJavaApplicationPlugin();
-        try {
-            dockerJavaApplicationPlugin.wait(10000);
-            }
-        catch(InterruptedException exception) {
-            exception.getMessage();
-            }
         }
     }

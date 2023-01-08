@@ -1,10 +1,15 @@
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerListImages
-import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
-import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.DockerInfo
 import com.bmuschko.gradle.docker.tasks.DockerVersion
 import com.bmuschko.gradle.docker.tasks.DockerOperation
+
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerExecContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerListImages
 
 plugins {
     id 'java'
@@ -26,6 +31,7 @@ dependencies {
     runtimeOnly(buildsrclibs.asciidoctorj.tabbed.code.extension)
     }
 
+/*
 docker {
     javaApplication {
         baseImage = 'openjdk:11.0.15-jre-slim'
@@ -43,11 +49,23 @@ dockerCreateDockerfile {
     }
 
 dockerCreateDockerfile.instructionsFromTemplate file('Dockerfile.tmpl')
+ */
+
+task createMyAppDockerfile(type: Dockerfile) {
+    instruction('FROM openjdk:11.0.15-jre-slim')
+    instruction('LABEL maintainer=\"Michael Redlich\"')
+    instruction('WORKDIR /app')
+    instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/muDockerApp/classes:/app/libs/*", "org.gradle.MainApp"]')
+    instruction('EXPOSE 9090 5701')
+    instruction('RUN ls -la')
+    environmentVariable('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
+    instructionsFromTemplate(file('Dockerfile.tmpl'))
+    }
 
 task buildMyAppImage(type: DockerBuildImage) {
-    dependsOn(dockerCreateDockerfile)
+    dependsOn(createMyAppDockerfile)
     inputDir.set(file('build/docker'))
-    images.add('test/myapp:latest')
+    images.add('test/app:latest')
     }
 
 task createMyAppContainer(type: DockerCreateContainer) {
@@ -60,16 +78,24 @@ task startMyAppContainer(type: DockerStartContainer) {
     targetContainerId(createMyAppContainer.getContainerId())
     }
 
+task stopMyAppContainer(type: DockerStopContainer) {
+    targetContainerId(createMyAppContainer.getContainerId())
+    }
+
+task executeMyAppContainer(type: DockerExecContainer) {
+    targetContainerId(createMyAppContainer.getContainerId())
+    }
+
 task getMyDockerInfo(type: DockerInfo) {
     }
 
 task getMyDockerVersion(type: DockerVersion) {
     }
 
-task getMyDockerOperation(type: DockerOperation) {
+task getMyDockerImageList(type: DockerListImages) {
     }
 
-task getMyDockerImageList(type: DockerListImages) {
+task getMyDockerOperation(type: DockerOperation) {
     }
 
 apply plugin: 'java'
