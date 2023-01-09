@@ -195,4 +195,6 @@ task getMyDockerImageList(type: DockerListImages) {
 
 There are no defined methods in this task, however, executing this task invokes the `runRemoteCommand()` method defined in the `DockerListImages` class.
 
+Now that you have added these tasks to your `build.gradle` file, it's time to exercise the example application!
+
 include::build-and-execute.adoc[]
