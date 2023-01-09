@@ -450,7 +450,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_what_youll_build">1.1. What You&#8217;ll Build</h3>
 <div class="paragraph">
-<p>You will build a Java application that generates a simple <code>Dockerfile</code>, builds the Docker image and creates the container. You will be using the Gradle Docker Plugin to achieve this goal.</p>
+<p>You will build a Java application that generates a simple <code>Dockerfile</code>, builds the Docker image and creates the Docker container. You will be using the Gradle Docker Plugin to achieve this goal.</p>
 </div>
 </div>
 <div class="sect2">
@@ -490,7 +490,7 @@ The Gradle Docker Plugin requires Gradle &gt;= 7.4.0.
 <div class="sect2">
 <h3 id="_create_a_project_folder">1.3. Create a Project Folder</h3>
 <div class="paragraph">
-<p>Gradle comes with a built-in task, called <code>init</code>, that initializes a new Gradle project in an empty folder. The <code>init</code> task uses the (also built-in) <code>wrapper</code> task to create a Gradle wrapper script, <code>gradlew</code>.</p>
+<p>Gradle provides a built-in task, <code>init</code>, that initializes a new Gradle project in an empty folder. The <code>init</code> task also uses the built-in <code>wrapper</code> task to create a Gradle wrapper script, <code>gradlew</code>.</p>
 </div>
 <div class="paragraph">
 <p>The first step is to create a folder for the new project and change directory into it.</p>
@@ -513,7 +513,7 @@ $ cd demo</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When prompted, select the <code>2: application</code> project type and <code>3: Java</code> as implementation language. Afterwards, select 2: Add library projects. Next you can choose the DSL for writing buildscripts - 1 : Groovy or 2: Kotlin. For the other questions, press enter to use the default values.</p>
+<p>You will be presented with an interactive application to select various options. For this example application, select the options as shown in the output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -682,7 +682,34 @@ import com.bmuschko.gradle.docker.tasks.image.DockerListImages</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_tasks">2. Tasks</h2>
+<h2 id="_plugins">2. Plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Gradle Docker Plugin provides three specific-use plugins to create and build a Docker image:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>DockerRemoteApiPlugin</code></p>
+</li>
+<li>
+<p><code>DockerJavaApplicationPlugin</code></p>
+</li>
+<li>
+<p><code>DockerSpringBootApplicationPlugin</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For our example application, you will be using the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/DockerJavaApplicationPlugin.html"><code>DockerJavaApplicatioPlugin</code></a> as described in the <a href="https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#java-application-plugin">Java Application Plugin</a> section of the user guide.</p>
+</div>
+<div class="paragraph">
+<p>Details on use cases and corresponding details on all three of these plugins may be found in the <a href="https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#provided_plugins">Provided Plugins</a> section of the Gradle Docker Plugin User Guide and Examples guide.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tasks">3. Tasks</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A Gradle Task represents a single atomic piece of work for a Gradle build, such as compiling classes or generating JavaDocs. Tasks are comprised by series of actions as defined by implementations of the <a href="https://docs.gradle.org/7.6/javadoc/org/gradle/api/Action.html"><code>Action</code></a> interface. Tasks are allowed to depend on other tasks.</p>
@@ -705,22 +732,8 @@ Directly instantiating these classes is <strong>not</strong> supported. You can 
 </tr>
 </table>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle">FROM openjdk:11.0.15-jre-slim
-LABEL maintainer="Michael Redlich \"mike@redlich.net\""
-WORKDIR /app
-COPY libs libs/
-COPY classes classes/
-ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/app/classes:/app/libs/*", "org.gradle.MainApp"]
-EXPOSE 9090 5701
-RUN ls -la
-ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-# template for generated Dockerfile</code></pre>
-</div>
-</div>
 <div class="sect2">
-<h3 id="_defined_tasks">2.1. Defined Tasks</h3>
+<h3 id="_defined_tasks">3.1. Defined Tasks</h3>
 <div class="paragraph">
 <p>Let&#8217;s review a list of defined task names and their dependencies that you will use for the example application:</p>
 </div>
@@ -781,7 +794,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_dockerfile_template">2.2. Dockerfile Template</h3>
+<h3 id="_dockerfile_template">3.2. Dockerfile Template</h3>
 <div class="paragraph">
 <p>As a starting point, you will need a Docker file template for this application. In the root directory of your project, create a file named <code>Dockerfile.tmpl</code> and add the following comment:</p>
 </div>
@@ -792,7 +805,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_dockerfile">2.3. Create Dockerfile</h3>
+<h3 id="_create_the_dockerfile_file">3.3. Create the <code>Dockerfile</code> File</h3>
 <div class="paragraph">
 <p>This task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/image/Dockerfile.html"><code>Dockerfile</code></a> class to generate a standard <code>Dockerfile</code> based on a template file, <code>Dockerfile.tmpl</code> that you just created. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -828,7 +841,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_the_image">2.4. Build the Image</h3>
+<h3 id="_build_the_docker_image">3.4. Build the Docker Image</h3>
 <div class="paragraph">
 <p>The <code>buildMyAppImage</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/image/DockerBuildImage.html"><code>DockerBuildImage</code></a> class to build the Docker image. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -859,7 +872,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_the_docker_container">2.5. Create the Docker Container</h3>
+<h3 id="_create_the_docker_container">3.5. Create the Docker Container</h3>
 <div class="paragraph">
 <p>The <code>createMyAppContainer</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/container/DockerCreateContainer.html"><code>DockerCreateContainer</code></a> class to create a Docker container. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -886,7 +899,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_start_the_docker_container">2.6. Start the Docker Container</h3>
+<h3 id="_start_the_docker_container">3.6. Start the Docker Container</h3>
 <div class="paragraph">
 <p>The <code>startMyAppContainer</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/container/DockerStartContainer.html"><code>DockerStartContainer</code></a> class to start a Docker container. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -907,13 +920,13 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <p>The <code>dependsOn()</code> method specifies a task that should be execute before this task</p>
 </li>
 <li>
-<p>The <code>targetContainerId()</code> method specifies the Docker image ID to use for starting the container</p>
+<p>The <code>targetContainerId()</code> method specifies the Docker image ID to use to start the Docker container</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_stop_the_docker_container">2.7. Stop the Docker Container</h3>
+<h3 id="_stop_the_docker_container">3.7. Stop the Docker Container</h3>
 <div class="paragraph">
 <p>The <code>stopMyAppcontainer</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/container/DockerStopContainer.html"><code>DockerStopContainer</code></a> class to stop a running Docker container. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -930,13 +943,13 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>targetContainerId()</code> method specifies the Docker image ID to use for stopping the running container</p>
+<p>The <code>targetContainerId()</code> method specifies the Docker image ID to use to stop the running container</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_execute_the_container">2.8. Execute the Container</h3>
+<h3 id="_execute_the_docker_container">3.8. Execute the Docker Container</h3>
 <div class="paragraph">
 <p>The <code>executeMyAppContainer</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/container/DockerExecContainer.html"><code>DockerExecContainer</code></a> class to execute a Docker container. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -959,7 +972,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_obtain_the_docker_information">2.9. Obtain the Docker Information</h3>
+<h3 id="_obtain_information_about_docker_installation">3.9. Obtain Information about Docker Installation</h3>
 <div class="paragraph">
 <p>The <code>getMyDockerInfo</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/DockerInfo.html"><code>DockerInfo</code></a> class to retrieve your local Docker installation. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -974,7 +987,7 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_obtain_the_docker_version">2.10. Obtain the Docker Version</h3>
+<h3 id="_obtain_the_docker_version">3.10. Obtain the Docker Version</h3>
 <div class="paragraph">
 <p>The <code>getMyDockerVersion</code> task instantiates the <code>DockerVersion</code> class to retrieve the version of your local Docker installation. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
@@ -989,9 +1002,9 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect2">
-<h3 id="_obtain_the_list_of_docker_images">2.11. Obtain the List of Docker Images</h3>
+<h3 id="_obtain_the_list_of_docker_images">3.11. Obtain the List of Docker Images</h3>
 <div class="paragraph">
-<p>The <code>getMyDockerImageList</code> task instantiates the There are no defined methods in this task, however, executing this task invokes the <code>runRemoteCommand()</code> method defined in the <code>DockerInfo</code> class.[<code>DockerListImages</code>] class to retrieve a list of your local Docker images. You can add the following content to your <code>build.gradle</code> file:</p>
+<p>The <code>getMyDockerImageList</code> task instantiates the <a href="https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/image/DockerListImages.html"><code>DockerListImages</code></a> class to retrieve a list of your local Docker images. You can add the following content to your <code>build.gradle</code> file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1009,16 +1022,20 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 </div>
 </div>
 <div class="sect1">
-<h2 id="_build_and_execute_the_application">3. Build and Execute the Application</h2>
+<h2 id="_build_and_execute_the_application">4. Build and Execute the Application</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Applications built with Gradle are launched using the <code>gradle</code> command along with built-in and user-defined tasks.</p>
 </div>
+<div class="sect2">
+<h3 id="_execute_java_applications">4.1. Execute Java Applications</h3>
 <div class="paragraph">
-<p>While you won&#8217;t be executing the <code>public static void main(String[] args)</code> method defined in the <code>App.java</code> for this example application, you can see how this gets executed by issuing the following command:</p>
+<p>While you won&#8217;t be required to execute the <code>public static void main(String[] args)</code> method defined in the <code>App.java</code> file for this example application, you can see at least how this gets executed by issuing the following command:</p>
 </div>
-<div class="paragraph">
-<p><code>$ gradle clean run --warning-mode all</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean run --warning-mode all</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>The <code>warning-mode</code> flag is used for listing any deprecated Gradle features that may be incompatible with the upcoming release of Gradle 8.0.</p>
@@ -1036,10 +1053,20 @@ BUILD SUCCESSFUL in 1s
 </div>
 </div>
 <div class="paragraph">
-<p>This example application was designed to initiate the <code>startMyAppContainer</code> task and allowing the dependency tasks to be executed first, but let&#8217;s individually execute these tasks.</p>
+<p>This displays the string, "Getting Started Building Docker Images with Gradle," defined in the <code>getGreeting()</code> method in <code>App.java</code> that generated using the <code>gradle init</code> command.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_execute_tasks">4.2. Execute Tasks</h3>
 <div class="paragraph">
-<p><code>$gradle clean createMyAppDockerfile</code></p>
+<p>This example application was designed to initiate the <code>startMyAppContainer</code> task and allow the dependency tasks to be executed first, but let&#8217;s individually execute those task dependencies.</p>
+</div>
+<div class="sect3">
+<h4 id="_createmyappdockerfile">4.2.1. <code>createMyAppDockerfile</code></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean createMyAppDockerfile</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>The only output is verification that the task successfully completed:</p>
@@ -1051,7 +1078,10 @@ BUILD SUCCESSFUL in 1s
 </div>
 </div>
 <div class="paragraph">
-<p>However, a <code>Dockerfile</code> was generated using the <code>Dockerfile.tmpl</code> template file that is stored in the <code>/build/docker</code> folder. Let&#8217;s take a look:</p>
+<p>However, a <code>Dockerfile</code> was quietly generated based on the <code>Dockerfile.tmpl</code> template. You can find the generated <code>Dockerfile</code> file in the <code>/build/docker</code> folder.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1068,51 +1098,22 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <div class="paragraph">
 <p>Notice how the Docker commands were prepended on top of the original comment, <code># template for generated Dockerfile</code>.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_buildmyappimage">4.2.2. <code>buildMyAppImage</code></h4>
 <div class="paragraph">
 <p>Now you can execute the <code>buildMyAppImage</code> task:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle">$gradle clean buildMyAppImage</code></pre>
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean buildMyAppImage</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Keep in mind that this task depends on the <code>createMyAppDockerfile</code> that you just executed, so the <code>Dockerfile</code> will once-again be generated.</p>
 </div>
 <div class="paragraph">
-<p>The output will look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle"></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now, let&#8217;s execute the <code>createMyAppContainer</code> task:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean createMyAppContainer</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Again, keep in mind that this task depends on the <code>buildMyAppImage</code> task.</p>
-</div>
-<div class="paragraph">
-<p>The output will look like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle"></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s create and build the image and start the container. The <code>startMyAppContainer</code> task depends on the tasks that require execution. Therefore, execute:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean startMyAppContainer</code></pre>
-</div>
+<p>Let&#8217;s review the output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1143,21 +1144,90 @@ Successfully built c2f34a8c1df6
 Successfully tagged test/app2:latest
 Created image with ID 'c2f34a8c1df6'.
 
-&gt; Task :createMyAppContainer
-Created container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
+BUILD SUCCESSFUL in 1s
+3 actionable tasks: 2 executed, 1 from cache</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can verify creation of the new image by executing the <code>docker</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ docker images</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s review the output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">test/app2                                       latest                c2f34a8c1df6   28 hours ago    227MB
+test/app                                        latest                13e86aa2705c   29 hours ago    227MB
+test/myapp                                      latest                ec013200a08d   42 hours ago    426MB
+mongo                                           latest                0850fead9327   4 weeks ago     700MB
+cassandra                                       latest                5b647422e184   2 months ago    353MB
+arangodb/arangodb                               latest                d81cf81aaa4b   3 months ago    440MB
+jakartaee-cafe                                  v1                    f03eac10057c   3 months ago    484MB</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_createmyappcontainer">4.2.3. <code>createMyAppContainer</code></h4>
+<div class="paragraph">
+<p>Now, let&#8217;s execute the <code>createMyAppContainer</code> task:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean createMyAppContainer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Again, keep in mind that this task depends on the <code>buildMyAppImage</code> task.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s review the output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :createMyAppContainer
+Created container with ID 'ea83da3cc17681424105d4c3602789b858cb0daee45b40efd2d36bac1b22f59c'.
 
-&gt; Task :startMyAppContainer
-Starting container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 3 executed, 1 from cache</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_startmyappcontainer">4.2.4. <code>startMyAppContainer</code></h4>
+<div class="paragraph">
+<p>Now let&#8217;s run the entire process by executing the <code>startMyAppContainer</code> task that executes all the dependencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean startMyAppContainer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s review the output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :startMyAppContainer
+Starting container with ID '0f150837001528439c9957b7b077b3d85be25fd86b98c3f491044f0a65083e29'.
 
-BUILD SUCCESSFUL in 4s
+BUILD SUCCESSFUL in 2s
 5 actionable tasks: 4 executed, 1 from cache</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_docker_version">3.1. Docker Version</h3>
+<div class="paragraph">
+<p>The next few tasks may be executed independently from the <code>startMyAppContainer</code> task.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_getmydockerversion">4.2.5. <code>getMyDockerVersion</code></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle">`$ gradle getMyDockerVersion`</code></pre>
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle getMyDockerVersion</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1176,8 +1246,42 @@ BUILD SUCCESSFUL in 1s
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_list_of_docker_images">3.2. List of Docker Images</h3>
+<div class="sect3">
+<h4 id="_getmydockerinfo">4.2.6. <code>getMyDockerInfo</code></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle getMyDockerInfo</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :getMyDockerInfo
+Retrieving Docker info.
+Debug                : false
+Containers           : 25
+Driver               : overlay2
+Driver Statuses      : [[Backing Filesystem, extfs], [Supports d_type, true], [Native Overlay Diff, true], [userxattr, false]]
+Images               : 53
+IPv4 Forwarding      : true
+Index Server Address : https://index.docker.io/v1/
+Init Path            : null
+Init SHA1            : null
+Kernel Version       : 5.15.49-linuxkit
+Sockets              : null
+Memory Limit         : true
+nEvent Listener      : 4
+NFd                  : 46
+NGoroutines          : 49
+Swap Limit           : true
+Execution Driver     : null
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_getmydockerimagelist">4.2.7. <code>getMyDockerImageList</code></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle getMyDockerImageList</code></pre>
@@ -1232,35 +1336,6 @@ BUILD SUCCESSFUL in 1s
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_plugins">4. Plugins</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Gradle Docker Plugin provides three specific-use plugins to create and build a Docker image:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>DockerRemoteApiPlugin</code></p>
-</li>
-<li>
-<p><code>DockerJavaApplicationPlugin</code></p>
-</li>
-<li>
-<p><code>DockerSpringBootApplicationPlugin</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Details on use cases and corresponding details on all three of these plugins may be found in the <a href="https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#provided_plugins">Provided Plugins</a> section of the Gradle Docker Plugin User Guide and Examples guide.</p>
-</div>
-<div class="paragraph">
-<p>For our example application, you will be using the <code>DockerJavaApplicatioPlugin</code>.</p>
-</div>
-<div class="paragraph">
-<p>You will be using the <a href="https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#java-application-plugin">Java Application Plugin</a> for this example application.</p>
 </div>
 </div>
 </div>
