@@ -519,7 +519,6 @@ This plugin requires Gradle &gt;= 7.4.0.
 <div class="content">
 <pre class="highlight"><code class="language-gradle" data-lang="gradle">import com.bmuschko.gradle.docker.tasks.DockerInfo
 import com.bmuschko.gradle.docker.tasks.DockerVersion
-import com.bmuschko.gradle.docker.tasks.DockerOperation
 
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerExecContainer
@@ -553,8 +552,6 @@ import com.bmuschko.gradle.docker.tasks.image.DockerListImages</code></pre>
 <pre class="highlight"><code class="language-gradle" data-lang="gradle">dependencies {
 implementation group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '6.7.0'
 implementation group: 'com.bmuschko', name: 'asciidoctorj-tabbed-code-extension', version: '0.3'
-implementation(buildsrclibs.asciidoctor.jvm.plugin)
-runtimeOnly(buildsrclibs.asciidoctorj.tabbed.code.extension)
 }</code></pre>
 </div>
 </div>
@@ -581,7 +578,7 @@ runtimeOnly(buildsrclibs.asciidoctorj.tabbed.code.extension)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-gradle" data-lang="gradle">`FROM openjdk:11.0.15-jre-slim
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">FROM openjdk:11.0.15-jre-slim
 LABEL maintainer="Michael Redlich \"mike@redlich.net\""
 WORKDIR /app
 COPY libs libs/
@@ -590,7 +587,7 @@ ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/app/classes
 EXPOSE 9090 5701
 RUN ls -la
 ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-# template for generated Dockerfile'</code></pre>
+# template for generated Dockerfile</code></pre>
 </div>
 </div>
 </div>
@@ -600,10 +597,10 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <h2 id="_tasks">3. Tasks</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Gradle <code>Task</code> represents a single atomic piece of work for a build, such as compiling classes or generating JavaDocs.</p>
+<p>A Gradle Task represents a single atomic piece of work for a Gradle build, such as compiling classes or generating JavaDocs. Tasks are comprised by series of actions as defined by implementations of the <a href="https://docs.gradle.org/7.6/javadoc/org/gradle/api/Action.html"><code>Action</code></a> interface. Tasks are allowed to depend on other tasks.</p>
 </div>
 <div class="paragraph">
-<p>You can create your own tasks by extending the <code>DefaultTask</code> class which implements the <code>Task</code> interface.</p>
+<p>You can create your own custom tasks by extending the <a href="https://docs.gradle.org/7.6/javadoc/org/gradle/api/DefaultTask.html"><code>DefaultTask</code></a> class which implements the <a href="https://docs.gradle.org/7.6/javadoc/org/gradle/api/Task.html"><code>Task</code></a> interface.</p>
 </div>
 <div class="paragraph">
 <p>In the Getting Started section, you imported all the required classes for this example application</p>
@@ -615,21 +612,16 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Directly instantiating these classes is <strong>not</strong> supported. You can only use the Gradle API or DSL
+Directly instantiating these classes is <strong>not</strong> supported. You can only instatiate them in the Gradle API or DSL, such as the <code>build.gradle</code> file.
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>In our case, we will implement them in the <code>build.gradle</code> file.</p>
-</div>
 <div class="sect2">
 <h3 id="_defined_tasks">3.1. Defined Tasks</h3>
 <div class="paragraph">
-<p>These are the defined tasks for building and working with your Docker image.</p>
+<p>These are the defined task names for the example application:</p>
 </div>
-<div class="sect3">
-<h4 id="_starting_a_docker_image">3.1.1. Starting a Docker Image</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -665,16 +657,6 @@ Directly instantiating these classes is <strong>not</strong> supported. You can 
 </ul>
 </div>
 </li>
-</ul>
-</div>
-<div class="paragraph">
-<p><code>gradle clean startMyAppContainer</code></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_docker_utilities">3.1.2. Docker Utilities</h4>
-<div class="ulist">
-<ul>
 <li>
 <p><code>stopMyAppContainer</code></p>
 </li>
@@ -695,12 +677,282 @@ Directly instantiating these classes is <strong>not</strong> supported. You can 
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>You can individually add all of these to your <code>build.gradle</code> file. We will discuss each of these and their corresponding classes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_dockerfile">3.2. Create Dockerfile</h3>
+<div class="paragraph">
+<p>This task instantiates the <code>Dockerfile</code> class to generate a standard <code>Dockerfile</code> based on a template file, <code>Dockerfile.tmpl</code>. You will need to manually create this file and add the following contents:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle"># template for generated Dockerfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This task contains a few calls to the <code>instruction()</code> method that specify the various Docker commands. The <code>environmentalVariable()</code> method accepts the environmental variable, <code>JAVA_OPTS</code> and the two values. The <code>instructionsFromTemplate()</code> method specifies the <code>Dockerfile.tmpl</code> file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task createMyAppDockerfile(type: Dockerfile) {
+instruction('FROM openjdk:11.0.15-jre-slim')
+instruction('LABEL maintainer=\"Michael Redlich\"')
+instruction('WORKDIR /app2')
+instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]')
+instruction('EXPOSE 9090 5701')
+instruction('RUN ls -la')
+environmentVariable('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
+instructionsFromTemplate(file('Dockerfile.tmpl'))
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_build_the_image">3.3. Build the Image</h3>
+<div class="paragraph">
+<p>The <code>buildMyAppImage</code> task instantiates the <code>DockerBuildImage</code> class to build the Docker image.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task buildMyAppImage(type: DockerBuildImage) {
+    dependsOn(createMyAppDockerfile)
+    inputDir.set(file('build/docker'))
+    images.add('test/app2:latest')
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_the_docker_container">3.4. Create the Docker Container</h3>
+<div class="paragraph">
+<p>The <code>createMyAppContainer</code> task instantiates the <code>DockerCreateContainer</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task createMyAppContainer(type: DockerCreateContainer) {
+    dependsOn(buildMyAppImage)
+    targetImageId(buildMyAppImage.getImageId())
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_start_the_docker_container">3.5. Start the Docker Container</h3>
+<div class="paragraph">
+<p>The <code>startMyAppContainer</code> task instantiates the <code>DockerStartContainer</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task startMyAppContainer(type: DockerStartContainer) {
+    dependsOn(createMyAppContainer)
+    targetContainerId(createMyAppContainer.getContainerId())
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_stop_the_docker_container">3.6. Stop the Docker Container</h3>
+<div class="paragraph">
+<p>The <code> task instantiates the </code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task stopMyAppContainer(type: DockerStopContainer) {
+    targetContainerId(createMyAppContainer.getContainerId())
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_execute_the_container">3.7. Execute the Container</h3>
+<div class="paragraph">
+<p>The <code>executeMyAppContainer</code> task instantiates the <code>DockerExecContainer</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task executeMyAppContainer(type: DockerExecContainer) {
+    targetContainerId(createMyAppContainer.getContainerId())
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obtain_the_docker_information">3.8. Obtain the Docker Information</h3>
+<div class="paragraph">
+<p>The <code>getMyDockerInfo</code> task instantiates the <code>DockerInfo</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task getMyDockerInfo(type: DockerInfo) {
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obtain_the_docker_version">3.9. Obtain the Docker Version</h3>
+<div class="paragraph">
+<p>The <code>getMyDockerVersion</code> task instantiates the <code>DockerVersion</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task getMyDockerVersion(type: DockerVersion) {
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obtain_the_list_of_docker_images">3.10. Obtain the List of Docker Images</h3>
+<div class="paragraph">
+<p>The <code>getMyDockerImageList</code> task instantiates the <code>DockerListImages</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">task getMyDockerImageList(type: DockerListImages) {
+    }</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_plugins">4. Plugins</h2>
+<h2 id="_build_and_execute_the_application">4. Build and Execute the Application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can launch parts of the application with the <code>gradle</code> command and the various tasks.</p>
+</div>
+<div class="paragraph">
+<p>Since we have a defined <code>application</code> block, we can execute the <code>main()</code> method defined in the MainApp:</p>
+</div>
+<div class="paragraph">
+<p><code>gradle clean run</code></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create and build the image and start the container. The <code>startMyAppContainer</code> task depends on the tasks that require execution. Therefore, execute:</p>
+</div>
+<div class="paragraph">
+<p><code>gradle clean startMyAppContainer</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :buildMyAppImage
+Building image using context '/usr/local/apps/gradle-apps/getting-started-building-docker-images-with-gradle/build/docker'.
+Using images 'test/app2:latest'.
+Step 1/7 : FROM openjdk:11.0.15-jre-slim
+ ---&gt; 699c24828c34
+Step 2/7 : LABEL maintainer="Michael Redlich"
+ ---&gt; Using cache
+ ---&gt; c7f43ff98289
+Step 3/7 : WORKDIR /app2
+ ---&gt; Using cache
+ ---&gt; 7eb1b1aaa358
+Step 4/7 : ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]
+ ---&gt; Using cache
+ ---&gt; 7a6087ee375c
+Step 5/7 : EXPOSE 9090 5701
+ ---&gt; Using cache
+ ---&gt; c2752b3bb2be
+Step 6/7 : RUN ls -la
+ ---&gt; Using cache
+ ---&gt; 8b5c28802e00
+Step 7/7 : ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+ ---&gt; Using cache
+ ---&gt; c2f34a8c1df6
+Successfully built c2f34a8c1df6
+Successfully tagged test/app2:latest
+Created image with ID 'c2f34a8c1df6'.
+
+&gt; Task :createMyAppContainer
+Created container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
+
+&gt; Task :startMyAppContainer
+Starting container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
+
+BUILD SUCCESSFUL in 4s
+5 actionable tasks: 4 executed, 1 from cache</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docker_version">4.1. Docker Version</h3>
+<div class="paragraph">
+<p>You can
+<code>gradle getMyDockerVersion</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :getMyDockerVersion
+Retrieving Docker version.
+Version          : 20.10.21
+Git Commit       : 3056208
+Go Version       : go1.18.7
+Kernel Version   : 5.15.49-linuxkit
+Architecture     : amd64
+Operating System : linux
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_list_of_docker_images">4.2. List of Docker Images</h3>
+<div class="paragraph">
+<p><code>gradle getMyDockerImageList</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :getMyDockerImageList
+Repository Tags : test/app2:latest
+Image ID        : sha256:c2f34a8c1df67b413537f9d706c85724bec78cfcaa85374194b10fda76e2fbae
+Created         : Sun Jan 08 10:41:03 EST 2023
+Virtual Size    : 227459049
+-----------------------------------------------
+Repository Tags : test/app:latest
+Image ID        : sha256:13e86aa2705c759b869ecc3c4de2e3d3a0c44cd13e7d1fa573693e34ebcbefdf
+Created         : Sun Jan 08 09:25:07 EST 2023
+Virtual Size    : 227459049
+-----------------------------------------------
+Repository Tags : test/myapp:latest
+Image ID        : sha256:ec013200a08d606abdf922e4941d5d557ed7a1718ad0a7f83a32e236503a70f4
+Created         : Sat Jan 07 20:14:53 EST 2023
+Virtual Size    : 425724205
+-----------------------------------------------
+Repository Tags : mongo:latest
+Image ID        : sha256:0850fead9327a6d88722c27116309022d78e9daf526b407a88de09762c32e620
+Created         : Thu Dec 08 21:37:35 EST 2022
+Virtual Size    : 699901543
+-----------------------------------------------
+Repository Tags : cassandra:latest
+Image ID        : sha256:5b647422e184fb0fd8f6d5513541e85c06876bdaa68decc026abcb65c3fe4ec5
+Created         : Fri Nov 04 19:47:02 EDT 2022
+Virtual Size    : 353334938
+-----------------------------------------------
+Repository Tags : arangodb/arangodb:latest
+Image ID        : sha256:d81cf81aaa4b1b637874eab9b877e34dcdee97a00800aaece837fd3d32f7eb56
+Created         : Thu Sep 29 10:22:06 EDT 2022
+Virtual Size    : 439791606
+-----------------------------------------------
+Repository Tags : jakartaee-cafe:v1
+Image ID        : sha256:f03eac10057c875306561572ce9ce338aa14f4d73917689ec911e891d0a9ce4d
+Created         : Tue Sep 13 13:38:25 EDT 2022
+Virtual Size    : 484008628
+-----------------------------------------------
+Repository Tags : openjdk:11.0.15-jre-slim
+Image ID        : sha256:699c24828c341c27d15a4f62b5c8fa3c5c986bf52fa76228906c50634f430311
+Created         : Mon Jul 11 22:00:45 EDT 2022
+Virtual Size    : 227459049
+-----------------------------------------------
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plugins">5. Plugins</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>There are three available plugins to create and build a Docker image:</p>
@@ -727,7 +979,7 @@ Directly instantiating these classes is <strong>not</strong> supported. You can 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_resources">5. Resources</h2>
+<h2 id="_resources">6. Resources</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -748,7 +1000,7 @@ Directly instantiating these classes is <strong>not</strong> supported. You can 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_summary">6. Summary</h2>
+<h2 id="_summary">7. Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>That’s it! You’ve now successfully configured and built a Java application project with Gradle. You’ve learned how to:</p>
@@ -778,10 +1030,10 @@ Directly instantiating these classes is <strong>not</strong> supported. You can 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_next_steps">7. Next Steps</h2>
+<h2 id="_next_steps">8. Next Steps</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_user_guide_and_examples">7.1. User Guide and Examples</h3>
+<h3 id="_user_guide_and_examples">8.1. User Guide and Examples</h3>
 <div class="paragraph">
 <p>You can learn more from <a href="https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/">Gradle Docker Plugin User Guide and Examples</a> documentation.</p>
 </div>

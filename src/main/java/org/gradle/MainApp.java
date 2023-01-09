@@ -7,10 +7,12 @@ import com.github.dockerjava.api.model.AuthConfig;
 
 public class MainApp {
 
+    public String getGreeting() {
+        return "Getting Started Building Docker Images with Gradle";
+        }
+
     public static void main(String[] args) {
-        System.out.println("*----------------------------------------------------*");
-        System.out.println("| Getting Started Building Docker Images with Gradle |");
-        System.out.println("*----------------------------------------------------*");
+        System.out.println(new MainApp().getGreeting());
 
         DockerJavaApplicationPlugin dockerJavaApplicationPlugin = new DockerJavaApplicationPlugin();
         RegistryAuthLocator registryAuthLocator = new RegistryAuthLocator();

@@ -35,7 +35,6 @@ First, let's import the required classes:
 ----
 import com.bmuschko.gradle.docker.tasks.DockerInfo
 import com.bmuschko.gradle.docker.tasks.DockerVersion
-import com.bmuschko.gradle.docker.tasks.DockerOperation
 
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerExecContainer
@@ -67,11 +66,8 @@ Let's update our `dependencies` block with the required dependencies:
 dependencies {
 implementation group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '6.7.0'
 implementation group: 'com.bmuschko', name: 'asciidoctorj-tabbed-code-extension', version: '0.3'
-implementation(buildsrclibs.asciidoctor.jvm.plugin)
-runtimeOnly(buildsrclibs.asciidoctorj.tabbed.code.extension)
 }
 ----
-
 
 === Java Application Plugin Classes
 

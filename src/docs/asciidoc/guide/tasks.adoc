@@ -29,6 +29,17 @@ These are the defined task names for the example application:
 
 You can individually add all of these to your `build.gradle` file. We will discuss each of these and their corresponding classes.
 
+=== Create Dockerfile
+
+This task instantiates the `Dockerfile` class to generate a standard `Dockerfile` based on a template file, `Dockerfile.tmpl`. You will need to manually create this file and add the following contents:
+
+[source, gradle]
+----
+# template for generated Dockerfile
+----
+
+This task contains a few calls to the `instruction()` method that specify the various Docker commands. The `environmentalVariable()` method accepts the environmental variable, `JAVA_OPTS` and the two values. The `instructionsFromTemplate()` method specifies the `Dockerfile.tmpl` file.
+
 [source, gradle]
 ----
 task createMyAppDockerfile(type: Dockerfile) {
@@ -43,6 +54,10 @@ instructionsFromTemplate(file('Dockerfile.tmpl'))
 }
 ----
 
+=== Build the Image
+
+The `buildMyAppImage` task instantiates the `DockerBuildImage` class to build the Docker image.
+
 [source, gradle]
 ----
 task buildMyAppImage(type: DockerBuildImage) {
@@ -52,6 +67,10 @@ task buildMyAppImage(type: DockerBuildImage) {
     }
 ----
 
+=== Create the Docker Container
+
+The `createMyAppContainer` task instantiates the `DockerCreateContainer` class.
+
 [source, gradle]
 ----
 task createMyAppContainer(type: DockerCreateContainer) {
@@ -59,6 +78,10 @@ task createMyAppContainer(type: DockerCreateContainer) {
     targetImageId(buildMyAppImage.getImageId())
     }
 ----
+
+=== Start the Docker Container
+
+The `startMyAppContainer` task instantiates the `DockerStartContainer` class.
 
 [source, gradle]
 ----
@@ -68,12 +91,20 @@ task startMyAppContainer(type: DockerStartContainer) {
     }
 ----
 
+=== Stop the Docker Container
+
+The `` task instantiates the `` class.
+
 [source, gradle]
 ----
 task stopMyAppContainer(type: DockerStopContainer) {
     targetContainerId(createMyAppContainer.getContainerId())
     }
 ----
+
+=== Execute the Container
+
+The `executeMyAppContainer` task instantiates the `DockerExecContainer` class.
 
 [source, gradle]
 ----
@@ -82,17 +113,29 @@ task executeMyAppContainer(type: DockerExecContainer) {
     }
 ----
 
+=== Obtain the Docker Information
+
+The `getMyDockerInfo` task instantiates the `DockerInfo` class.
+
 [source, gradle]
 ----
 task getMyDockerInfo(type: DockerInfo) {
     }
 ----
 
+=== Obtain the Docker Version
+
+The `getMyDockerVersion` task instantiates the `DockerVersion` class.
+
 [source, gradle]
 ----
 task getMyDockerVersion(type: DockerVersion) {
     }
 ----
+
+=== Obtain the List of Docker Images
+
+The `getMyDockerImageList` task instantiates the `DockerListImages` class.
 
 [source, gradle]
 ----

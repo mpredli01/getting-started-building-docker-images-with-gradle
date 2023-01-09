@@ -1,11 +1,81 @@
 == Build and Execute the Application
 
+You can launch parts of the application with the `gradle` command and the various tasks.
+
+Since we have a defined `application` block, we can execute the `main()` method defined in the MainApp:
+
+`gradle clean run`
+
+Let's create and build the image and start the container. The `startMyAppContainer` task depends on the tasks that require execution. Therefore, execute:
+
 `gradle clean startMyAppContainer`
+
+[source, gradle]
+----
+> Task :buildMyAppImage
+Building image using context '/usr/local/apps/gradle-apps/getting-started-building-docker-images-with-gradle/build/docker'.
+Using images 'test/app2:latest'.
+Step 1/7 : FROM openjdk:11.0.15-jre-slim
+ ---> 699c24828c34
+Step 2/7 : LABEL maintainer="Michael Redlich"
+ ---> Using cache
+ ---> c7f43ff98289
+Step 3/7 : WORKDIR /app2
+ ---> Using cache
+ ---> 7eb1b1aaa358
+Step 4/7 : ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]
+ ---> Using cache
+ ---> 7a6087ee375c
+Step 5/7 : EXPOSE 9090 5701
+ ---> Using cache
+ ---> c2752b3bb2be
+Step 6/7 : RUN ls -la
+ ---> Using cache
+ ---> 8b5c28802e00
+Step 7/7 : ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+ ---> Using cache
+ ---> c2f34a8c1df6
+Successfully built c2f34a8c1df6
+Successfully tagged test/app2:latest
+Created image with ID 'c2f34a8c1df6'.
+
+> Task :createMyAppContainer
+Created container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
+
+> Task :startMyAppContainer
+Starting container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
+
+BUILD SUCCESSFUL in 4s
+5 actionable tasks: 4 executed, 1 from cache
+----
+
+=== Docker Version
+
+You can 
+`gradle getMyDockerVersion`
+
+[source, gradle]
+----
+> Task :getMyDockerVersion
+Retrieving Docker version.
+Version          : 20.10.21
+Git Commit       : 3056208
+Go Version       : go1.18.7
+Kernel Version   : 5.15.49-linuxkit
+Architecture     : amd64
+Operating System : linux
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+----
+
+=== List of Docker Images
 
 `gradle getMyDockerImageList`
 
 [source, gradle]
 ----
+> Task :getMyDockerImageList
 Repository Tags : test/app2:latest
 Image ID        : sha256:c2f34a8c1df67b413537f9d706c85724bec78cfcaa85374194b10fda76e2fbae
 Created         : Sun Jan 08 10:41:03 EST 2023
@@ -20,26 +90,6 @@ Repository Tags : test/myapp:latest
 Image ID        : sha256:ec013200a08d606abdf922e4941d5d557ed7a1718ad0a7f83a32e236503a70f4
 Created         : Sat Jan 07 20:14:53 EST 2023
 Virtual Size    : 425724205
------------------------------------------------
-Repository Tags : <none>:<none>
-Image ID        : sha256:09d2222453762f0a87efa26797baea7c56a8348f94b1edbbc143f9422cb60332
-Created         : Sat Jan 07 19:58:54 EST 2023
-Virtual Size    : 425723773
------------------------------------------------
-Repository Tags : <none>:<none>
-Image ID        : sha256:e8f5b45dedfec84302653b3611bedeea9230491a2db6d744f30a172e0659840a
-Created         : Sat Jan 07 19:33:26 EST 2023
-Virtual Size    : 425724364
------------------------------------------------
-Repository Tags : <none>:<none>
-Image ID        : sha256:dbe8b9fef243ca4d0e183e7d448db8da8a6cf4333eee825ba86fd47952bb868c
-Created         : Sat Jan 07 18:06:40 EST 2023
-Virtual Size    : 425724227
------------------------------------------------
-Repository Tags : <none>:<none>
-Image ID        : sha256:db65df43475cccec9ee5a99fe073bb8b875f660c3a4c493709e39a11e392b4b9
-Created         : Sat Jan 07 16:39:25 EST 2023
-Virtual Size    : 425724542
 -----------------------------------------------
 Repository Tags : mongo:latest
 Image ID        : sha256:0850fead9327a6d88722c27116309022d78e9daf526b407a88de09762c32e620
@@ -61,55 +111,13 @@ Image ID        : sha256:f03eac10057c875306561572ce9ce338aa14f4d73917689ec911e89
 Created         : Tue Sep 13 13:38:25 EDT 2022
 Virtual Size    : 484008628
 -----------------------------------------------
-Repository Tags : <none>:<none>
-Image ID        : sha256:d85c8d0913597830145d526733fc64543dab9606001a1ba7dea7332cb3168e1c
-Created         : Tue Sep 06 07:40:14 EDT 2022
-Virtual Size    : 484008672
------------------------------------------------
-Repository Tags : <none>:<none>
-Image ID        : sha256:6bbbc6493fbcfc579c5ceba1b6cb59383ef1e9830ab0e244b5bb5ce4d30f5d54
-Created         : Mon Sep 05 12:14:07 EDT 2022
-Virtual Size    : 484008672
------------------------------------------------
-Repository Tags : testcontainers/ryuk:0.3.4
-Image ID        : sha256:7ac27de2f0c441174e7e12a105f876493b902ffd7bbb2a3646aa929c08cc3806
-Created         : Thu Jul 28 10:06:18 EDT 2022
-Virtual Size    : 11975796
------------------------------------------------
 Repository Tags : openjdk:11.0.15-jre-slim
 Image ID        : sha256:699c24828c341c27d15a4f62b5c8fa3c5c986bf52fa76228906c50634f430311
 Created         : Mon Jul 11 22:00:45 EDT 2022
 Virtual Size    : 227459049
 -----------------------------------------------
-Repository Tags : quay.io/strimzi-test-container/test-container:0.102.0-kafka-3.1.0
-Image ID        : sha256:475805acc0817503ece6b995faf40239935408a4b0e7ad87e10cebf5ffa5d0bc
-Created         : Tue Jun 28 04:03:11 EDT 2022
-Virtual Size    : 484031489
------------------------------------------------
-Repository Tags : ghcr.io/shopify/toxiproxy:2.4.0
-Image ID        : sha256:d3349b5be4c9034ef91cf2944a85dfc1f6ac1d0fd83fd19691b4864536f66925
-Created         : Mon Mar 07 11:22:49 EST 2022
-Virtual Size    : 17096704
------------------------------------------------
-Repository Tags : testcontainers/ryuk:0.3.3
-Image ID        : sha256:64f4b02dc9864d9621d248e55835408a03b3cd8239b790e610c71c29ea45a3b9
-Created         : Thu Oct 14 04:34:37 EDT 2021
-Virtual Size    : 11982543
------------------------------------------------
-Repository Tags : docker101tutorial:latest, mpredli01/docker101tutorial:latest
-Image ID        : sha256:89c1ee81cd04217a7e39da679a8921714788c42ffa7f52e2ffabb78a2e4239db
-Created         : Mon Jan 25 04:07:32 EST 2021
-Virtual Size    : 27691421
------------------------------------------------
-Repository Tags : alpine/git:latest
-Image ID        : sha256:04dbb58d2cea66b732a6e96888a29909df1afd6a58b31eb327ade7d54e8fbd64
-Created         : Wed Jan 20 00:05:44 EST 2021
-Virtual Size    : 25078792
------------------------------------------------
-Repository Tags : gcr.io/k8s-minikube/kicbase:v0.0.10
-Image ID        : sha256:e6bc41c39dc48b2b472936db36aedb28527ce0f675ed1bc20d029125c9ccf578
-Created         : Mon Apr 27 13:43:12 EDT 2020
-Virtual Size    : 973506865
------------------------------------------------
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
 ----
 include::plugins.adoc[]

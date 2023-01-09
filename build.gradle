@@ -1,6 +1,5 @@
 import com.bmuschko.gradle.docker.tasks.DockerInfo
 import com.bmuschko.gradle.docker.tasks.DockerVersion
-import com.bmuschko.gradle.docker.tasks.DockerOperation
 
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerExecContainer
@@ -82,4 +81,12 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 
 application {
     mainClass.set('org.gradle.MainApp')
+    }
+
+testing {
+    suites {
+        test {
+            useJUnit('4.13.2')
+            }
+        }
     }
