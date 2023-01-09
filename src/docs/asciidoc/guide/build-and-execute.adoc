@@ -10,6 +10,17 @@ Let's create and build the image and start the container. The `startMyAppContain
 
 `gradle clean startMyAppContainer`
 
+`gradle clean startMyAppContainer --warning-mode all`
+
+The `--warning-mode` flag is used for listing deprecated Gradle features that may be incompatible with Gradle 8.0 scheduled for release on { date }.
+
+The generated `Dockerfile` may be found in the `/build/docker` directory.  It contains:
+
+The `Docker.tmpl` file is a template that is used for the plugin to create the official `Dockerfile` in the `build` directory upon success of the build.
+
+`# template for generated Dockerfile'
+
+
 [source, gradle]
 ----
 > Task :buildMyAppImage

@@ -1,5 +1,0 @@
-== Introduction
-
-In this Gradle Guide, You will learn how to build a simple Docker image using the https://github.com/bmuschko/gradle-docker-plugin[Gradle Docker Plugin].
-
-include::getting-started.adoc[]

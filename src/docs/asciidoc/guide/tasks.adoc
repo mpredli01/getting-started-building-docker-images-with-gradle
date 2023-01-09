@@ -4,14 +4,28 @@ A Gradle Task represents a single atomic piece of work for a Gradle build, such 
 
 You can create your own custom tasks by extending the https://docs.gradle.org/7.6/javadoc/org/gradle/api/DefaultTask.html[`DefaultTask`] class which implements the https://docs.gradle.org/7.6/javadoc/org/gradle/api/Task.html[`Task`] interface.
 
-In the Getting Started section, you imported all the required classes for this example application
+In the Getting Started section, you imported all the required Gradle Tasks for this example application.
 
 [IMPORTANT]
-Directly instantiating these classes is *not* supported. You can only instatiate them in the Gradle API or DSL, such as the `build.gradle` file.
+Directly instantiating these classes is *not* supported. You can only instantiate them in the Gradle API or DSL, such as the `build.gradle` file. Attempting to directly instantiate these classes will result in an exception of type https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/TaskInstantiationException.html[`TaskInstantiationException`].
+
+[source, gradle]
+----
+FROM openjdk:11.0.15-jre-slim
+LABEL maintainer="Michael Redlich \"mike@redlich.net\""
+WORKDIR /app
+COPY libs libs/
+COPY classes classes/
+ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/app/classes:/app/libs/*", "org.gradle.MainApp"]
+EXPOSE 9090 5701
+RUN ls -la
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+# template for generated Dockerfile
+----
 
 === Defined Tasks
 
-These are the defined task names for the example application:
+This is a list of defined task names and their dependencies that you will use for the example application:
 
 * `createMyAppDockerfile` generates a working `Dockerfile` file based on the template, `Dockefile.tmpl`.
 * `buildMyAppImage` builds the Docker image from the generated `Dockerfile`.
@@ -27,9 +41,16 @@ These are the defined task names for the example application:
 * `getMyDockerImageList`
 * `getMyDockerOperation`
 
-You can individually add all of these to your `build.gradle` file. We will discuss each of these and their corresponding classes.
+You will be adding all of these to your `build.gradle` file. We will discuss each of these and their corresponding classes.
 
 === Create Dockerfile
+
+You will need a template Docker file for this application. In the root directory of your project, create a file named `Dockerfile.tmpl` with the following content:
+
+[source, gradle]
+----
+# template for generated Dockerfile
+----
 
 This task instantiates the `Dockerfile` class to generate a standard `Dockerfile` based on a template file, `Dockerfile.tmpl`. You will need to manually create this file and add the following contents:
 

@@ -1,6 +1,6 @@
 == Plugins
 
-There are three available plugins to create and build a Docker image:
+The Gradle Docker Plugin provides three specific-use plugins to create and build a Docker image:
 
 * `DockerRemoteApiPlugin`
 * `DockerJavaApplicationPlugin`
@@ -9,5 +9,7 @@ There are three available plugins to create and build a Docker image:
 Details on use cases and corresponding details on all three of these plugins may be found in the https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#provided_plugins[Provided Plugins] section of the Gradle Docker Plugin User Guide and Examples guide.
 
 For our example application, you will be using the `DockerJavaApplicatioPlugin`.
+
+You will be using the https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#java-application-plugin[Java Application Plugin] for this example application.
 
 include::resources.adoc[]

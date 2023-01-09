@@ -21,4 +21,4 @@ ifndef::imagesdir[:imagesdir: images]
 
 :sectnums:
 
-include::introduction.adoc[]
+include::getting-started.adoc[]
