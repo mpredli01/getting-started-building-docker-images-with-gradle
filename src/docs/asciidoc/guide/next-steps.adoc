@@ -1,5 +1,4 @@
 == Next Steps
 
-=== User Guide and Examples
+You can learn more details by following the https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/[Gradle Docker Plugin User Guide and Examples] user guide.
 
-You can learn more from https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/[Gradle Docker Plugin User Guide and Examples] documentation.

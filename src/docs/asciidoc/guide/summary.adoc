@@ -2,11 +2,9 @@
 
 That’s it! You’ve now successfully configured and built a Java application project with Gradle. You’ve learned how to:
 
-* Initialize a project that produces a Java application
-* Create a modular software project by combining multiple subprojects
-* Share build configuration logic between subprojects using convention plugins in buildSrc
-* Run similar named tasks in all subprojects
-* Run a task in a specific subproject
-* Build, bundle and run the application
+* Initialize a Java project using the `gradle init` command 
+* Add additonal plugins and dependencies in the generated `build.gradle` file
+* Define custom tasks that apply the classes defined within the Gradle Docker Plugin
+* Build run the application
 
 include::next-steps.adoc[]

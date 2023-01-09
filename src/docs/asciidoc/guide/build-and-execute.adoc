@@ -1,24 +1,90 @@
 == Build and Execute the Application
 
-You can launch parts of the application with the `gradle` command and the various tasks.
+Applications built with Gradle are launched using the `gradle` command along with built-in and user-defined tasks.
 
-Since we have a defined `application` block, we can execute the `main()` method defined in the MainApp:
+While you won't be executing the `public static void main(String[] args)` method defined in the `App.java` for this example application, you can see how this gets executed by issuing the following command:
 
-`gradle clean run`
+`$ gradle clean run --warning-mode all`
+
+The `warning-mode` flag is used for listing any deprecated Gradle features that may be incompatible with the upcoming release of Gradle 8.0.
+
+The output will look like:
+
+[source, gradle]
+----
+> Task :run
+Getting Started Building Docker Images with Gradle
+
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 3 executed, 1 from cache
+----
+
+This example application was designed to initiate the `startMyAppContainer` task and allowing the dependency tasks to be executed first, but let's individually execute these tasks.
+
+`$gradle clean createMyAppDockerfile`
+
+The only output is verification that the task successfully completed:
+
+[source, gradle]
+----
+
+BUILD SUCCESSFUL in 540ms
+2 actionable tasks: 1 executed, 1 from cache
+----
+
+However, a `Dockerfile` was generated using the `Dockerfile.tmpl` template file that is stored in the `/build/docker` folder. Let's take a look:
+
+[source, gradle]
+----
+FROM openjdk:11.0.15-jre-slim
+LABEL maintainer="Michael Redlich"
+WORKDIR /app2
+ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]
+EXPOSE 9090 5701
+RUN ls -la
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+# template for generated Dockerfile
+----
+
+Notice how the Docker commands were prepended on top of the original comment, `# template for generated Dockerfile`.
+
+Now you can execute the `buildMyAppImage` task:
+
+[source, gradle]
+----
+$gradle clean buildMyAppImage
+----
+
+Keep in mind that this task depends on the `createMyAppDockerfile` that you just executed, so the `Dockerfile` will once-again be generated.
+
+The output will look like:
+
+[source, gradle]
+----
+----
+
+Now, let's execute the `createMyAppContainer` task:
+
+[source, gradle]
+----
+$ gradle clean createMyAppContainer
+----
+
+Again, keep in mind that this task depends on the `buildMyAppImage` task.
+
+The output will look like:
+
+[source, gradle]
+----
+----
+
 
 Let's create and build the image and start the container. The `startMyAppContainer` task depends on the tasks that require execution. Therefore, execute:
 
-`gradle clean startMyAppContainer`
-
-`gradle clean startMyAppContainer --warning-mode all`
-
-The `--warning-mode` flag is used for listing deprecated Gradle features that may be incompatible with Gradle 8.0 scheduled for release on { date }.
-
-The generated `Dockerfile` may be found in the `/build/docker` directory.  It contains:
-
-The `Docker.tmpl` file is a template that is used for the plugin to create the official `Dockerfile` in the `build` directory upon success of the build.
-
-`# template for generated Dockerfile'
+[source, gradle]
+----
+$ gradle clean startMyAppContainer
+----
 
 
 [source, gradle]
@@ -60,10 +126,14 @@ BUILD SUCCESSFUL in 4s
 5 actionable tasks: 4 executed, 1 from cache
 ----
 
+
+
 === Docker Version
 
-You can 
-`gradle getMyDockerVersion`
+[source, gradle]
+----
+`$ gradle getMyDockerVersion`
+----
 
 [source, gradle]
 ----
@@ -82,7 +152,10 @@ BUILD SUCCESSFUL in 1s
 
 === List of Docker Images
 
-`gradle getMyDockerImageList`
+[source, gradle]
+----
+$ gradle getMyDockerImageList
+----
 
 [source, gradle]
 ----

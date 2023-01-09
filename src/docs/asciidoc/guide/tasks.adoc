@@ -39,7 +39,6 @@ Let's review a list of defined task names and their dependencies that you will u
 * `getMyDockerInfo`
 * `getMyDockerVersion`
 * `getMyDockerImageList`
-* `getMyDockerOperation`
 
 You will be providing the definitions to all of these tasks within your `build.gradle` file as we review each one.
 
