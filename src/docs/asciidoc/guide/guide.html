@@ -774,9 +774,6 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <li>
 <p><code>getMyDockerImageList</code></p>
 </li>
-<li>
-<p><code>getMyDockerOperation</code></p>
-</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -802,15 +799,15 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-gradle" data-lang="gradle">task createMyAppDockerfile(type: Dockerfile) {
-instruction('FROM openjdk:11.0.15-jre-slim')
-instruction('LABEL maintainer=\"Michael Redlich\"')
-instruction('WORKDIR /app2')
-instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]')
-instruction('EXPOSE 9090 5701')
-instruction('RUN ls -la')
-environmentVariable('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
-instructionsFromTemplate(file('Dockerfile.tmpl'))
-}</code></pre>
+    instruction('FROM openjdk:11.0.15-jre-slim')
+    instruction('LABEL maintainer=\"Michael Redlich\"')
+    instruction('WORKDIR /app2')
+    instruction('ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]')
+    instruction('EXPOSE 9090 5701')
+    instruction('RUN ls -la')
+    environmentVariable('JAVA_OPTS', '-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap')
+    instructionsFromTemplate(file('Dockerfile.tmpl'))
+    }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1005,6 +1002,9 @@ instructionsFromTemplate(file('Dockerfile.tmpl'))
 <div class="paragraph">
 <p>There are no defined methods in this task, however, executing this task invokes the <code>runRemoteCommand()</code> method defined in the <code>DockerListImages</code> class.</p>
 </div>
+<div class="paragraph">
+<p>Now that you have added these tasks to your <code>build.gradle</code> file, it&#8217;s time to exercise the example application!</p>
+</div>
 </div>
 </div>
 </div>
@@ -1012,34 +1012,107 @@ instructionsFromTemplate(file('Dockerfile.tmpl'))
 <h2 id="_build_and_execute_the_application">3. Build and Execute the Application</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can launch parts of the application with the <code>gradle</code> command and the various tasks.</p>
+<p>Applications built with Gradle are launched using the <code>gradle</code> command along with built-in and user-defined tasks.</p>
 </div>
 <div class="paragraph">
-<p>Since we have a defined <code>application</code> block, we can execute the <code>main()</code> method defined in the MainApp:</p>
+<p>While you won&#8217;t be executing the <code>public static void main(String[] args)</code> method defined in the <code>App.java</code> for this example application, you can see how this gets executed by issuing the following command:</p>
 </div>
 <div class="paragraph">
-<p><code>gradle clean run</code></p>
+<p><code>$ gradle clean run --warning-mode all</code></p>
+</div>
+<div class="paragraph">
+<p>The <code>warning-mode</code> flag is used for listing any deprecated Gradle features that may be incompatible with the upcoming release of Gradle 8.0.</p>
+</div>
+<div class="paragraph">
+<p>The output will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">&gt; Task :run
+Getting Started Building Docker Images with Gradle
+
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 3 executed, 1 from cache</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example application was designed to initiate the <code>startMyAppContainer</code> task and allowing the dependency tasks to be executed first, but let&#8217;s individually execute these tasks.</p>
+</div>
+<div class="paragraph">
+<p><code>$gradle clean createMyAppDockerfile</code></p>
+</div>
+<div class="paragraph">
+<p>The only output is verification that the task successfully completed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">BUILD SUCCESSFUL in 540ms
+2 actionable tasks: 1 executed, 1 from cache</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, a <code>Dockerfile</code> was generated using the <code>Dockerfile.tmpl</code> template file that is stored in the <code>/build/docker</code> folder. Let&#8217;s take a look:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">FROM openjdk:11.0.15-jre-slim
+LABEL maintainer="Michael Redlich"
+WORKDIR /app2
+ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app2/resources:/muDockerApp/classes:/app2/libs/*", "org.gradle.MainApp"]
+EXPOSE 9090 5701
+RUN ls -la
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+# template for generated Dockerfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice how the Docker commands were prepended on top of the original comment, <code># template for generated Dockerfile</code>.</p>
+</div>
+<div class="paragraph">
+<p>Now you can execute the <code>buildMyAppImage</code> task:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$gradle clean buildMyAppImage</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Keep in mind that this task depends on the <code>createMyAppDockerfile</code> that you just executed, so the <code>Dockerfile</code> will once-again be generated.</p>
+</div>
+<div class="paragraph">
+<p>The output will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle"></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, let&#8217;s execute the <code>createMyAppContainer</code> task:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean createMyAppContainer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Again, keep in mind that this task depends on the <code>buildMyAppImage</code> task.</p>
+</div>
+<div class="paragraph">
+<p>The output will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle"></code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s create and build the image and start the container. The <code>startMyAppContainer</code> task depends on the tasks that require execution. Therefore, execute:</p>
 </div>
-<div class="paragraph">
-<p><code>gradle clean startMyAppContainer</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle clean startMyAppContainer</code></pre>
 </div>
-<div class="paragraph">
-<p><code>gradle clean startMyAppContainer --warning-mode all</code></p>
-</div>
-<div class="paragraph">
-<p>The <code>--warning-mode</code> flag is used for listing deprecated Gradle features that may be incompatible with Gradle 8.0 scheduled for release on { date }.</p>
-</div>
-<div class="paragraph">
-<p>The generated <code>Dockerfile</code> may be found in the <code>/build/docker</code> directory.  It contains:</p>
-</div>
-<div class="paragraph">
-<p>The <code>Docker.tmpl</code> file is a template that is used for the plugin to create the official <code>Dockerfile</code> in the <code>build</code> directory upon success of the build.</p>
-</div>
-<div class="paragraph">
-<p>`# template for generated Dockerfile'</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1082,9 +1155,10 @@ BUILD SUCCESSFUL in 4s
 </div>
 <div class="sect2">
 <h3 id="_docker_version">3.1. Docker Version</h3>
-<div class="paragraph">
-<p>You can
-<code>gradle getMyDockerVersion</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">`$ gradle getMyDockerVersion`</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1104,8 +1178,10 @@ BUILD SUCCESSFUL in 1s
 </div>
 <div class="sect2">
 <h3 id="_list_of_docker_images">3.2. List of Docker Images</h3>
-<div class="paragraph">
-<p><code>gradle getMyDockerImageList</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gradle" data-lang="gradle">$ gradle getMyDockerImageList</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1189,8 +1265,37 @@ BUILD SUCCESSFUL in 1s
 </div>
 </div>
 <div class="sect1">
-<h2 id="_resources">5. Resources</h2>
+<h2 id="_summary">5. Summary</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>That’s it! You’ve now successfully configured and built a Java application project with Gradle. You’ve learned how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Initialize a Java project using the <code>gradle init</code> command</p>
+</li>
+<li>
+<p>Add additonal plugins and dependencies in the generated <code>build.gradle</code> file</p>
+</li>
+<li>
+<p>Define custom tasks that apply the classes defined within the Gradle Docker Plugin</p>
+</li>
+<li>
+<p>Build run the application</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps">6. Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are interested in learning more, please visit these resources.</p>
+</div>
+<div class="sect2">
+<h3 id="_resources">6.1. Resources</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1209,46 +1314,6 @@ BUILD SUCCESSFUL in 1s
 <p>Documentation: <a href="https://docs.gradle.org/current/userguide/plugins.html">Using Gradle Plugins</a></p>
 </li>
 </ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_summary">6. Summary</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>That’s it! You’ve now successfully configured and built a Java application project with Gradle. You’ve learned how to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Initialize a project that produces a Java application</p>
-</li>
-<li>
-<p>Create a modular software project by combining multiple subprojects</p>
-</li>
-<li>
-<p>Share build configuration logic between subprojects using convention plugins in buildSrc</p>
-</li>
-<li>
-<p>Run similar named tasks in all subprojects</p>
-</li>
-<li>
-<p>Run a task in a specific subproject</p>
-</li>
-<li>
-<p>Build, bundle and run the application</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_next_steps">7. Next Steps</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_user_guide_and_examples">7.1. User Guide and Examples</h3>
-<div class="paragraph">
-<p>You can learn more from <a href="https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/">Gradle Docker Plugin User Guide and Examples</a> documentation.</p>
 </div>
 </div>
 </div>

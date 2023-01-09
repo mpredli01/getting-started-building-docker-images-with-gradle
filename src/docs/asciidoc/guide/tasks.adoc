@@ -9,20 +9,6 @@ In the Getting Started section, you imported all the required Gradle Tasks for t
 [IMPORTANT]
 Directly instantiating these classes is *not* supported. You can only instantiate them in the Gradle API or DSL, such as the `build.gradle` file. Attempting to directly instantiate these classes will result in an exception of type https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/TaskInstantiationException.html[`TaskInstantiationException`].
 
-[source, gradle]
-----
-FROM openjdk:11.0.15-jre-slim
-LABEL maintainer="Michael Redlich \"mike@redlich.net\""
-WORKDIR /app
-COPY libs libs/
-COPY classes classes/
-ENTRYPOINT ["java", "-Xms256m", "-Xmx2048m", "-cp", "/app/resources:/app/classes:/app/libs/*", "org.gradle.MainApp"]
-EXPOSE 9090 5701
-RUN ls -la
-ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-# template for generated Dockerfile
-----
-
 === Defined Tasks
 
 Let's review a list of defined task names and their dependencies that you will use for the example application:
@@ -51,7 +37,7 @@ As a starting point, you will need a Docker file template for this application. 
 # template for generated Dockerfile
 ----
 
-=== Create Dockerfile
+=== Create the `Dockerfile` File
 
 This task instantiates the https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/image/Dockerfile.html[`Dockerfile`] class to generate a standard `Dockerfile` based on a template file, `Dockerfile.tmpl` that you just created. You can add the following content to your `build.gradle` file:
 
@@ -75,7 +61,7 @@ There are three methods defined in this task:
 * The `environmentalVariable()` method specifies any environmental variables
 * The `instructionsFromTemplate()` method specifies the `Dockerfile.tmpl` file as a template
 
-=== Build the Image
+=== Build the Docker Image
 
 The `buildMyAppImage` task instantiates the https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/image/DockerBuildImage.html[`DockerBuildImage`] class to build the Docker image. You can add the following content to your `build.gradle` file:
 
@@ -126,7 +112,7 @@ task startMyAppContainer(type: DockerStartContainer) {
 There are two methods defined in this task:
 
 * The `dependsOn()` method specifies a task that should be execute before this task
-* The `targetContainerId()` method specifies the Docker image ID to use for starting the container
+* The `targetContainerId()` method specifies the Docker image ID to use to start the Docker container
 
 === Stop the Docker Container
 
@@ -141,9 +127,9 @@ task stopMyAppContainer(type: DockerStopContainer) {
 
 There is only one method defined in this task:
 
-* The `targetContainerId()` method specifies the Docker image ID to use for stopping the running container
+* The `targetContainerId()` method specifies the Docker image ID to use to stop the running container
 
-=== Execute the Container
+=== Execute the Docker Container
 
 The `executeMyAppContainer` task instantiates the https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/container/DockerExecContainer.html[`DockerExecContainer`] class to execute a Docker container. You can add the following content to your `build.gradle` file:
 
@@ -158,7 +144,7 @@ There is only one method defined in this task:
 
 * The `targetContainerId()` method specifies the Docker image ID to use for executing a Docker container.
 
-=== Obtain the Docker Information
+=== Obtain Information about Docker Installation
 
 The `getMyDockerInfo` task instantiates the https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/DockerInfo.html[`DockerInfo`] class to retrieve your local Docker installation. You can add the following content to your `build.gradle` file:
 
@@ -184,7 +170,7 @@ There are no defined methods in this task, however, executing this task invokes 
 
 === Obtain the List of Docker Images
 
-The `getMyDockerImageList` task instantiates the There are no defined methods in this task, however, executing this task invokes the `runRemoteCommand()` method defined in the `DockerInfo` class.[`DockerListImages`] class to retrieve a list of your local Docker images. You can add the following content to your `build.gradle` file:
+The `getMyDockerImageList` task instantiates the https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/com/bmuschko/gradle/docker/tasks/image/DockerListImages.html[`DockerListImages`] class to retrieve a list of your local Docker images. You can add the following content to your `build.gradle` file:
 
 [source, gradle]
 ----

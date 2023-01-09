@@ -1,4 +1,13 @@
 == Next Steps
 
-You can learn more details by following the https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/[Gradle Docker Plugin User Guide and Examples] user guide.
+If you are interested in learning more, please visit these resources.
+
+=== Resources
+
+* JavaDocs: https://bmuschko.github.io/gradle-docker-plugin/9.1.0/api/index.html[Gradle Docker Plugin]
+* User Guide: https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/[Gradle Docker Plugin User Guide and Examples]
+* User Guide: https://bmuschko.github.io/gradle-docker-plugin/current/user-guide/#java-application-plugin[Java Application Plugin] for this example application.
+* https://plugins.gradle.org/[Gradle Plugin Portal]
+* Documentation: https://docs.gradle.org/current/userguide/plugins.html[Using Gradle Plugins]
+
 

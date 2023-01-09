@@ -2,9 +2,14 @@
 
 Applications built with Gradle are launched using the `gradle` command along with built-in and user-defined tasks.
 
-While you won't be executing the `public static void main(String[] args)` method defined in the `App.java` for this example application, you can see how this gets executed by issuing the following command:
+=== Execute Java Applications
 
-`$ gradle clean run --warning-mode all`
+While you won't be required to execute the `public static void main(String[] args)` method defined in the `App.java` file for this example application, you can see at least how this gets executed by issuing the following command:
+
+[source, gradle]
+----
+$ gradle clean run --warning-mode all
+----
 
 The `warning-mode` flag is used for listing any deprecated Gradle features that may be incompatible with the upcoming release of Gradle 8.0.
 
@@ -19,20 +24,30 @@ BUILD SUCCESSFUL in 1s
 4 actionable tasks: 3 executed, 1 from cache
 ----
 
-This example application was designed to initiate the `startMyAppContainer` task and allowing the dependency tasks to be executed first, but let's individually execute these tasks.
+This displays the string, "Getting Started Building Docker Images with Gradle," defined in the `getGreeting()` method in `App.java` that generated using the `gradle init` command.
 
-`$gradle clean createMyAppDockerfile`
+=== Execute Tasks
+
+This example application was designed to initiate the `startMyAppContainer` task and allow the dependency tasks to be executed first, but let's individually execute those task dependencies.
+
+==== `createMyAppDockerfile`
+
+[source, gradle]
+----
+$ gradle clean createMyAppDockerfile
+----
 
 The only output is verification that the task successfully completed:
 
 [source, gradle]
 ----
-
 BUILD SUCCESSFUL in 540ms
 2 actionable tasks: 1 executed, 1 from cache
 ----
 
-However, a `Dockerfile` was generated using the `Dockerfile.tmpl` template file that is stored in the `/build/docker` folder. Let's take a look:
+However, a `Dockerfile` was quietly generated based on the `Dockerfile.tmpl` template. You can find the generated `Dockerfile` file in the `/build/docker` folder.
+
+Let's take a look:
 
 [source, gradle]
 ----
@@ -48,44 +63,18 @@ ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 
 Notice how the Docker commands were prepended on top of the original comment, `# template for generated Dockerfile`.
 
+==== `buildMyAppImage`
+
 Now you can execute the `buildMyAppImage` task:
 
 [source, gradle]
 ----
-$gradle clean buildMyAppImage
+$ gradle clean buildMyAppImage
 ----
 
 Keep in mind that this task depends on the `createMyAppDockerfile` that you just executed, so the `Dockerfile` will once-again be generated.
 
-The output will look like:
-
-[source, gradle]
-----
-----
-
-Now, let's execute the `createMyAppContainer` task:
-
-[source, gradle]
-----
-$ gradle clean createMyAppContainer
-----
-
-Again, keep in mind that this task depends on the `buildMyAppImage` task.
-
-The output will look like:
-
-[source, gradle]
-----
-----
-
-
-Let's create and build the image and start the container. The `startMyAppContainer` task depends on the tasks that require execution. Therefore, execute:
-
-[source, gradle]
-----
-$ gradle clean startMyAppContainer
-----
-
+Let's review the output:
 
 [source, gradle]
 ----
@@ -116,23 +105,79 @@ Successfully built c2f34a8c1df6
 Successfully tagged test/app2:latest
 Created image with ID 'c2f34a8c1df6'.
 
-> Task :createMyAppContainer
-Created container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
-
-> Task :startMyAppContainer
-Starting container with ID 'b7fb995f1d59698a927333471b446f051ee803ac5a3c174395645bbfbc3b58e8'.
-
-BUILD SUCCESSFUL in 4s
-5 actionable tasks: 4 executed, 1 from cache
+BUILD SUCCESSFUL in 1s
+3 actionable tasks: 2 executed, 1 from cache
 ----
 
-
-
-=== Docker Version
+You can verify creation of the new image by executing the `docker` command:
 
 [source, gradle]
 ----
-`$ gradle getMyDockerVersion`
+$ docker images
+----
+
+Let's review the output:
+
+[source, gradle]
+----
+test/app2                                       latest                c2f34a8c1df6   28 hours ago    227MB
+test/app                                        latest                13e86aa2705c   29 hours ago    227MB
+test/myapp                                      latest                ec013200a08d   42 hours ago    426MB
+mongo                                           latest                0850fead9327   4 weeks ago     700MB
+cassandra                                       latest                5b647422e184   2 months ago    353MB
+arangodb/arangodb                               latest                d81cf81aaa4b   3 months ago    440MB
+jakartaee-cafe                                  v1                    f03eac10057c   3 months ago    484MB
+----
+
+==== `createMyAppContainer`
+
+Now, let's execute the `createMyAppContainer` task:
+
+[source, gradle]
+----
+$ gradle clean createMyAppContainer
+----
+
+Again, keep in mind that this task depends on the `buildMyAppImage` task.
+
+Let's review the output:
+
+[source, gradle]
+----
+> Task :createMyAppContainer
+Created container with ID 'ea83da3cc17681424105d4c3602789b858cb0daee45b40efd2d36bac1b22f59c'.
+
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 3 executed, 1 from cache
+----
+
+==== `startMyAppContainer`
+
+Now let's run the entire process by executing the `startMyAppContainer` task that executes all the dependencies:
+
+[source, gradle]
+----
+$ gradle clean startMyAppContainer
+----
+
+Let's review the output:
+
+[source, gradle]
+----
+> Task :startMyAppContainer
+Starting container with ID '0f150837001528439c9957b7b077b3d85be25fd86b98c3f491044f0a65083e29'.
+
+BUILD SUCCESSFUL in 2s
+5 actionable tasks: 4 executed, 1 from cache
+----
+
+The next few tasks may be executed independently from the `startMyAppContainer` task.
+
+==== `getMyDockerVersion`
+
+[source, gradle]
+----
+$ gradle getMyDockerVersion
 ----
 
 [source, gradle]
@@ -150,7 +195,40 @@ BUILD SUCCESSFUL in 1s
 1 actionable task: 1 executed
 ----
 
-=== List of Docker Images
+==== `getMyDockerInfo`
+
+[source, gradle]
+----
+$ gradle getMyDockerInfo
+----
+
+[source, gradle]
+----
+> Task :getMyDockerInfo
+Retrieving Docker info.
+Debug                : false
+Containers           : 25
+Driver               : overlay2
+Driver Statuses      : [[Backing Filesystem, extfs], [Supports d_type, true], [Native Overlay Diff, true], [userxattr, false]]
+Images               : 53
+IPv4 Forwarding      : true
+Index Server Address : https://index.docker.io/v1/
+Init Path            : null
+Init SHA1            : null
+Kernel Version       : 5.15.49-linuxkit
+Sockets              : null
+Memory Limit         : true
+nEvent Listener      : 4
+NFd                  : 46
+NGoroutines          : 49
+Swap Limit           : true
+Execution Driver     : null
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+----
+
+==== `getMyDockerImageList`
 
 [source, gradle]
 ----
@@ -204,4 +282,5 @@ Virtual Size    : 227459049
 BUILD SUCCESSFUL in 1s
 1 actionable task: 1 executed
 ----
-include::plugins.adoc[]
+
+include::summary.adoc[]

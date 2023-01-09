@@ -4,7 +4,7 @@ In this Gradle Guide, you will learn how to build a simple Docker image using th
 
 === What You'll Build
 
-You will build a Java application that generates a simple `Dockerfile`, builds the Docker image and creates the container. You will be using the Gradle Docker Plugin to achieve this goal.
+You will build a Java application that generates a simple `Dockerfile`, builds the Docker image and creates the Docker container. You will be using the Gradle Docker Plugin to achieve this goal.
 
 === What You'll Need
 
@@ -19,7 +19,7 @@ The Gradle Docker Plugin requires Gradle >= 7.4.0.
 
 === Create a Project Folder
 
-Gradle comes with a built-in task, called `init`, that initializes a new Gradle project in an empty folder. The `init` task uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
+Gradle provides a built-in task, `init`, that initializes a new Gradle project in an empty folder. The `init` task also uses the built-in `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
 The first step is to create a folder for the new project and change directory into it.
 
@@ -38,7 +38,7 @@ From inside your new project directory, run the `init` task using the following 
 $ gradle init
 ----
 
-When prompted, select the `2: application` project type and `3: Java` as implementation language. Afterwards, select 2: Add library projects. Next you can choose the DSL for writing buildscripts - 1 : Groovy or 2: Kotlin. For the other questions, press enter to use the default values.
+You will be presented with an interactive application to select various options. For this example application, select the options as shown in the output:
 
 [source, gradle]
 ----
@@ -194,4 +194,4 @@ dependencies {
 
 Now that you have initially updated your `build.gradle` file, it's time to define the tasks.
 
-include::tasks.adoc[]
+include::plugins.adoc[]
