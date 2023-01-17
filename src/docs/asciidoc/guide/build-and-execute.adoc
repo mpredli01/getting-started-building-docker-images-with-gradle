@@ -8,7 +8,7 @@ While you won't be required to execute the `public static void main(String[] arg
 
 [source, gradle]
 ----
-$ gradle clean run --warning-mode all
+$ gradle run --warning-mode all
 ----
 
 The `warning-mode` flag is used for listing any deprecated Gradle features that may be incompatible with the upcoming release of Gradle 8.0.
@@ -34,7 +34,7 @@ This example application was designed to initiate the `startMyAppContainer` task
 
 [source, gradle]
 ----
-$ gradle clean createMyAppDockerfile
+$ gradle createMyAppDockerfile
 ----
 
 The only output is verification that the task successfully completed:
@@ -69,7 +69,7 @@ Now you can execute the `buildMyAppImage` task:
 
 [source, gradle]
 ----
-$ gradle clean buildMyAppImage
+$ gradle buildMyAppImage
 ----
 
 Keep in mind that this task depends on the `createMyAppDockerfile` that you just executed, so the `Dockerfile` will once-again be generated.
@@ -135,7 +135,7 @@ Now, let's execute the `createMyAppContainer` task:
 
 [source, gradle]
 ----
-$ gradle clean createMyAppContainer
+$ gradle createMyAppContainer
 ----
 
 Again, keep in mind that this task depends on the `buildMyAppImage` task.
@@ -157,7 +157,7 @@ Now let's run the entire process by executing the `startMyAppContainer` task tha
 
 [source, gradle]
 ----
-$ gradle clean startMyAppContainer
+$ gradle startMyAppContainer
 ----
 
 Let's review the output:

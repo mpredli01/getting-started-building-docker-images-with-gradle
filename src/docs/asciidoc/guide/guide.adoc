@@ -19,6 +19,6 @@ endif::[]
 :icons: font
 ifndef::imagesdir[:imagesdir: images]
 
-:sectnums:
+// :sectnums:
 
 include::getting-started.adoc[]
